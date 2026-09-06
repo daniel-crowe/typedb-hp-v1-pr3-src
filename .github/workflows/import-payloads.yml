@@ -1,0 +1,29 @@
+name: import-payloads
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/import-payloads.yml
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch payloads
+        run: |
+          set -euo pipefail
+          mkdir -p fonts-b64
+          fetch() {
+            local page="$1" dest="$2" expect="$3"
+            html=$(curl -fsSL -A Mozilla/5.0 "$page")
+            dl=$(printf '%s' "$html" | sed -n 's/.*class="download" href="\([^"]*\)".*/\1/p' | head -n1)
+            test -n "$dl"
+            curl -fsSL -A Mozilla/5.0 "$dl" -o "$dest"
+            got=$(sha256sum "$dest" | awk '{print $1}')
+            test "$got" = "$expect"
+          }
+          fetch https://tmpfiles.org/wDwnkQmklW3F/darkmodeon-rg.ttf.b64 fonts-b64/DarkmodeOn-Rg.ttf.b64 9be46e4cc37efe698d2c26dfc6daaf30a9259fcad5aa474d76caa81451528479
+          fetch https://tmpfiles.org/wVwvkom3l5Yu/darkmodeon-bd.ttf.b64 fonts-b64/DarkmodeOn-Bd.ttf.b64 374cb97f37bc51f6a4d5c2e8c0f1e0e0e0e0e0e0
