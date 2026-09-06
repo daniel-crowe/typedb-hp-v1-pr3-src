@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PageBackground } from "@/components/PageBackground";
 import { copy } from "@/lib/copy";
 import { darkmode, monaco } from "./fonts";
+import "./fonts.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
