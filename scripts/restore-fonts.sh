@@ -4,10 +4,22 @@ root=$(CDPATH= cd -- "$(dirname "$0")/.." && pwd)
 python3 - <<PY
 import base64
 from pathlib import Path
-src = Path("$root") / "fonts-b64"
-dest = Path("$root") / "app/fonts"
-dest.mkdir(parents=True, exist_ok=True)
+
+root = Path(r"""$root""")
+src = root / "fonts-b64"
+dests = [root / "app/fonts", root / "public/fonts"]
+for dest in dests:
+    dest.mkdir(parents=True, exist_ok=True)
+
+def decode(text: str) -> bytes:
+    compact = "".join(text.split())
+    compact += "=" * ((4 - len(compact) % 4) % 4)
+    return base64.b64decode(compact)
+
 for path in src.glob("*.b64"):
-    dest.joinpath(path.name[:-4]).write_bytes(base64.b64decode(path.read_text()))
-print("restored", sorted(p.name for p in dest.iterdir()))
+    data = decode(path.read_text())
+    name = path.name[:-4]
+    for dest in dests:
+        dest.joinpath(name).write_bytes(data)
+print("restored", sorted(p.name for p in dests[0].iterdir()))
 PY
