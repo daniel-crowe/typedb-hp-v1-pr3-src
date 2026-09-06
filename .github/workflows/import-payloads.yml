@@ -7,11 +7,14 @@ on:
       - .github/workflows/import-payloads.yml
 jobs:
   import:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Fetch payloads
         run: |
           set -euo pipefail
@@ -39,4 +42,5 @@ jobs:
           git add fonts-b64/*.b64 package-lock.json
           git diff --cached --quiet && exit 0
           git commit -m "Add font payloads and package-lock"
+          git pull --rebase origin main
           git push
