@@ -1,0 +1,17 @@
+export const urls = {
+  home: "https://typedb.com/",
+  docs: "https://typedb.com/docs",
+  cloud: "https://typedb.com/cloud",
+  install: "https://typedb.com/docs/home/install",
+  communityEdition: "https://typedb.com/community-edition",
+  studio: "https://studio.typedb.com",
+  blog: "https://typedb.com/blog",
+  github: "https://github.com/typedb/typedb",
+  discord: "https://typedb.com/discord",
+  whatIs: "https://typedb.com/docs/home/what-is-typedb",
+  editions: "https://typedb.com/editions",
+  agentic: "https://typedb.com/use-cases/agentic-systems",
+  cti: "https://typedb.com/use-cases/cyber-threat-intelligence",
+  originRepo: "https://github.com/originsciences/epigraph",
+  brgmBlog: "https://typedb.com/blog/from-geoscience-to-decision-making",
+} as const;
