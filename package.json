@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
-    "vercel-build": "next build",
+    "build": "sh scripts/restore-fonts.sh && next build",
+    "vercel-build": "sh scripts/restore-fonts.sh && NODE_ENV=production next build",
     "start": "next start",
     "lint": "eslint ."
   },

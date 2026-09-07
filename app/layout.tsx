@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { FontFaces } from "@/components/FontFaces";
 import { PageBackground } from "@/components/PageBackground";
 import { copy } from "@/lib/copy";
 import { darkmode, monaco } from "./fonts";
@@ -22,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${darkmode.variable} ${monaco.variable}`}>
       <body>
+        <FontFaces />
         <PageBackground />
         {children}
       </body>

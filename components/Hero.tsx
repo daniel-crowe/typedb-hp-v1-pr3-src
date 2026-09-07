@@ -1,4 +1,5 @@
 import { copy } from "@/lib/copy";
+import { TypedFactGraph } from "./TypedFactGraph";
 
 export function Hero() {
   return (
@@ -15,6 +16,10 @@ export function Hero() {
           </a>
         </div>
       </div>
+      <TypedFactGraph
+        id="hero-possess"
+        caption="The ownership fact is held in TypeDB. Alice plays owner. typedb plays resource."
+      />
     </section>
   );
 }

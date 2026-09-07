@@ -16,6 +16,9 @@ def decode(text: str) -> bytes:
     compact += "=" * ((4 - len(compact) % 4) % 4)
     return base64.b64decode(compact)
 
+if not src.exists():
+    raise SystemExit(f"missing {src}")
+
 for path in src.glob("*.b64"):
     data = decode(path.read_text())
     name = path.name[:-4]
