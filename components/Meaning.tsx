@@ -1,11 +1,13 @@
 "use client";
 
+import { Fragment, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useRef } from "react";
 import { copy } from "@/lib/copy";
-import { TypedFactGraph } from "./TypedFactGraph";
+import { phaseFromProgress, seekScrub } from "@/lib/scrub-seek";
+import { MeaningGraphic, type MeaningPhase } from "./MeaningGraphic";
+import { ScrubBack } from "./ScrubBack";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -16,35 +18,59 @@ function reducedMotionOn(): boolean {
 }
 
 export function Meaning() {
-  const root = useRef<HTMLElement>(null);
+  const root = useRef\u003cHTMLElement\u003e(null);
+  const trigger = useRef\u003cScrollTrigger | null\u003e(null);
+  const [phase, setPhase] = useState\u003cMeaningPhase\u003e("ingest");
 
   useGSAP(
-    () => {
+    () =\u003e {
       const section = root.current;
       if (!section) {
         return;
       }
 
-      const band = section.querySelector<HTMLElement>(".lifecycle-band");
-      const steps = section.querySelectorAll<HTMLElement>("[data-lifecycle-step]");
-      const fill = section.querySelector<HTMLElement>(".lifecycle-fill");
+      const band = section.querySelector\u003cHTMLElement\u003e(".lifecycle-band");
+      const steps = section.querySelectorAll\u003cHTMLElement\u003e("[data-lifecycle-step]");
+      const fill = section.querySelector\u003cHTMLElement\u003e(".lifecycle-fill");
 
       if (!band) {
         return;
       }
 
+      let last = -1;
+      const applyPhase = (index: number) =\u003e {
+        if (index === last) {
+          return;
+        }
+        last = index;
+        const key = STEPS[index] ?? "ingest";
+        setPhase((current) =\u003e (current === key ? current : key));
+        steps.forEach((node, i) =\u003e {
+          const on = i \u003c= index;
+          node.classList.toggle("is-on", on);
+          gsap.to(node, { autoAlpha: on ? 1 : 0.4, duration: 0.2, overwrite: "auto" });
+        });
+        if (fill) {
+          gsap.to(fill, {
+            scaleX: (index + 1) / STEPS.length,
+            duration: 0.2,
+            overwrite: "auto",
+          });
+        }
+      };
+
       if (reducedMotionOn()) {
         band.classList.add("is-poster");
-        steps.forEach((node) => {
-          node.classList.add("is-on");
-        });
         if (fill) {
           fill.style.transform = "scaleX(1)";
         }
+        steps.forEach((node) =\u003e {
+          node.classList.add("is-on");
+        });
         return;
       }
 
-      gsap.set(steps, { autoAlpha: 0.28, y: 14 });
+      gsap.set(steps, { autoAlpha: 0.4 });
       if (fill) {
         gsap.set(fill, { scaleX: 0, transformOrigin: "left center" });
       }
@@ -55,89 +81,75 @@ export function Meaning() {
           start: "top 78%",
           end: "bottom 32%",
           scrub: 0.7,
+          onUpdate: (self) =\u003e {
+            applyPhase(phaseFromProgress(self.progress, STEPS.length));
+          },
         },
       });
-
-      STEPS.forEach((key, index) => {
-        const node = section.querySelector<HTMLElement>(`[data-lifecycle-step="${key}"]`);
-        if (!node) {
-          return;
-        }
-        const at = index * 0.4;
-        timeline.to(
-          node,
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.38,
-            ease: "power2.out",
-            onStart: () => {
-              node.classList.add("is-on");
-            },
-          },
-          at,
-        );
-        if (fill) {
-          timeline.to(fill, { scaleX: (index + 1) / STEPS.length, duration: 0.38, ease: "none" }, at);
-        }
-      });
+      timeline.to({}, { duration: 1 });
+      trigger.current = timeline.scrollTrigger ?? null;
     },
     { scope: root },
   );
 
   return (
-    <section className="section section-proof" ref={root} id="meaning">
-      <div className="wrap">
-        <p className="eyebrow">{copy.s2.eyebrow}</p>
-        <h2 className="section-title">{copy.s2.h2}</h2>
-        <p className="lede">{copy.s2.lede}</p>
+    \u003csection className="section section-proof" ref={root} id="meaning"\u003e
+      \u003cdiv className="wrap"\u003e
+        \u003ch2 className="section-title"\u003e{copy.s2.h2}\u003c/h2\u003e
 
-        <figure className="domain-graphic">
-          <figcaption>
-            <strong>{copy.s2.graphic.title}</strong>
-            <span>{copy.s2.graphic.lede}</span>
-          </figcaption>
-          <div className="domain-map">
-            <div className="lifecycle-band" aria-label="Ingest, update, enforce">
-              <span className="lifecycle-progress" aria-hidden="true">
-                <span className="lifecycle-fill" />
-              </span>
-              <article data-lifecycle-step="ingest">
-                <p className="lifecycle-label">{copy.s2.graphic.ingest.label}</p>
-                <p>{copy.s2.graphic.ingest.body}</p>
-              </article>
-              <span className="lifecycle-arrow" aria-hidden="true">
-                →
-              </span>
-              <article data-lifecycle-step="update">
-                <p className="lifecycle-label">{copy.s2.graphic.update.label}</p>
-                <p>{copy.s2.graphic.update.body}</p>
-              </article>
-              <span className="lifecycle-arrow" aria-hidden="true">
-                →
-              </span>
-              <article data-lifecycle-step="enforce">
-                <p className="lifecycle-label">{copy.s2.graphic.enforce.label}</p>
-                <p>{copy.s2.graphic.enforce.body}</p>
-              </article>
-            </div>
-            <TypedFactGraph
-              id="meaning-map"
-              caption="The same fact stays on the map while writes arrive, change, and fail closed."
-            />
-          </div>
-        </figure>
+        \u003cfigure className="domain-graphic"\u003e
+          \u003cdiv className="domain-map"\u003e
+            \u003cdiv className="lifecycle-band" aria-label="Ingest, update, enforce"\u003e
+              \u003cspan className="lifecycle-progress" aria-hidden="true"\u003e
+                \u003cspan className="lifecycle-fill" /\u003e
+              \u003c/span\u003e
+              {STEPS.map((key, index) =\u003e (
+                \u003cFragment key={key}\u003e
+                  {index \u003e 0 ? (
+                    \u003cspan className="lifecycle-arrow" aria-hidden="true"\u003e
+                      →
+                    \u003c/span\u003e
+                  ) : null}
+                  \u003cbutton
+                    type="button"
+                    className="lifecycle-step"
+                    data-lifecycle-step={key}
+                    aria-pressed={phase === key}
+                    onClick={() =\u003e {
+                      setPhase(key);
+                      seekScrub(trigger.current, index, STEPS.length);
+                    }}
+                  \u003e
+                    \u003cp className="lifecycle-label"\u003e{copy.s2.graphic[key].label}\u003c/p\u003e
+                    \u003cp\u003e{copy.s2.graphic[key].body}\u003c/p\u003e
+                  \u003c/button\u003e
+                \u003c/Fragment\u003e
+              ))}
+            \u003c/div\u003e
+            \u003cMeaningGraphic phase={phase} /\u003e
+            \u003cScrubBack
+              index={STEPS.indexOf(phase)}
+              count={STEPS.length}
+              onPrevious={() =\u003e {
+                const current = STEPS.indexOf(phase);
+                const previous = Math.max(0, current - 1);
+                const key = STEPS[previous] ?? "ingest";
+                setPhase(key);
+                seekScrub(trigger.current, previous, STEPS.length);
+              }}
+            /\u003e
+          \u003c/div\u003e
+        \u003c/figure\u003e
 
-        <div className="prop-grid">
-          {copy.s2.props.map((prop) => (
-            <article key={prop.title} className="prop-card">
-              <div className="metric-slot" aria-hidden="true" />
-              <h3>{prop.title}</h3>
-              <p>{prop.body}</p>
-            </article>
+        \u003cdiv className="prop-grid"\u003e
+          {copy.s2.props.map((prop) =\u003e (
+            \u003carticle key={prop.title} className="prop-card"\u003e
+              \u003ch3\u003e{prop.title}\u003c/h3\u003e
+              \u003cp\u003e{prop.body}\u003c/p\u003e
+            \u003c/article\u003e
           ))}
-        </div>
-      </div>
-    </section>
+        \u003c/div\u003e
+      \u003c/div\u003e
+    \u003c/section\u003e
   );
 }
