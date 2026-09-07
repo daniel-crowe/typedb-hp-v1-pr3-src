@@ -1,0 +1,134 @@
+.hero {
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 1fr);
+  gap: 36px;
+}
+
+.hero .typed-graph {
+  margin: 0;
+}
+
+.lifecycle-band {
+  position: relative;
+}
+
+.lifecycle-progress {
+  position: absolute;
+  top: 10px;
+  left: 22px;
+  right: 22px;
+  height: 2px;
+  background: var(--raised);
+  pointer-events: none;
+}
+
+.lifecycle-fill {
+  display: block;
+  height: 100%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: var(--accent);
+}
+
+.lifecycle-band article {
+  position: relative;
+  z-index: 1;
+}
+
+.lifecycle-band article.is-on {
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--raised));
+}
+
+.lifecycle-band.is-poster article,
+.lifecycle-band.is-poster .lifecycle-fill {
+  opacity: 1;
+}
+
+.lifecycle-band.is-poster .lifecycle-fill {
+  transform: scaleX(1);
+}
+
+.typed-graph,
+.process-graph {
+  width: 100%;
+  margin: 18px 0 0;
+}
+
+.typed-graph.is-compact {
+  margin: 0;
+}
+
+.typed-graph svg,
+.process-graph {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.typed-graph figcaption {
+  margin: 10px 0 0;
+  color: var(--mute);
+  font-size: 13px;
+}
+
+.typed-node rect {
+  fill: #12101d;
+  stroke: var(--raised);
+}
+
+.typed-node.entity .typed-kind {
+  fill: var(--entity);
+}
+
+.typed-node.relation .typed-kind,
+.typed-node.relation .typed-role {
+  fill: var(--relation);
+}
+
+.typed-node.step .typed-kind {
+  fill: var(--mute-2);
+}
+
+.typed-kind {
+  font-family: var(--font-family-code);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.typed-name,
+.typed-inst {
+  fill: var(--ink);
+  font-size: 13px;
+}
+
+.typed-inst {
+  fill: var(--mute);
+  font-size: 11px;
+}
+
+.typed-edge {
+  stroke: #958fa8;
+  stroke-width: 1.25;
+}
+
+.typed-role {
+  fill: var(--relation);
+  font-family: var(--font-family-code);
+  font-size: 10px;
+}
+
+@media (max-width: 860px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lifecycle-fill {
+    transition: none;
+  }
+
+  .lifecycle-band.is-poster .lifecycle-fill {
+    transform: scaleX(1);
+  }
+}

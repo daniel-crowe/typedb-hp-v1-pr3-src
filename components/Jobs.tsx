@@ -1,4 +1,5 @@
 import { copy } from "@/lib/copy";
+import { ProcessGraph } from "./ProcessGraph";
 
 type JobId = (typeof copy.s3.items)[number]["id"];
 
@@ -6,10 +7,16 @@ function JobVisual({ id }: { id: JobId }) {
   switch (id) {
     case "code-graph":
       return (
-        <div className="job-visual code-graph">
-          <span className="walk-node">function</span>
-          <span className="walk-edge">covers</span>
-          <span className="walk-node">test</span>
+        <div className="job-visual">
+          <ProcessGraph
+            label="A function covers a test"
+            nodes={[
+              { kind: "entity", name: "function" },
+              { kind: "relation", name: "coverage" },
+              { kind: "entity", name: "test" },
+            ]}
+            edges={["covers", "covered"]}
+          />
         </div>
       );
     case "agentic":
@@ -24,22 +31,30 @@ function JobVisual({ id }: { id: JobId }) {
       );
     case "cti":
       return (
-        <div className="job-visual cti-graph">
-          <span className="walk-node">threat-actor</span>
-          <span className="walk-edge">attributed-to</span>
-          <span className="walk-node">campaign</span>
-          <span className="walk-edge">uses</span>
-          <span className="walk-node">attack-pattern</span>
+        <div className="job-visual">
+          <ProcessGraph
+            label="A threat actor is attributed to a campaign that uses an attack pattern"
+            nodes={[
+              { kind: "entity", name: "threat-actor" },
+              { kind: "relation", name: "attribution" },
+              { kind: "entity", name: "campaign" },
+            ]}
+            edges={["actor", "campaign"]}
+          />
         </div>
       );
     case "decision":
       return (
         <div className="job-visual">
-          <div className="role-row">
-            <span className="role-tag">site</span>
-            <span className="role-tag">constraint</span>
-            <span className="role-tag">measurement</span>
-          </div>
+          <ProcessGraph
+            label="A decision binds site, constraint, and measurement"
+            nodes={[
+              { kind: "entity", name: "site" },
+              { kind: "relation", name: "decision" },
+              { kind: "entity", name: "constraint" },
+            ]}
+            edges={["site", "limit"]}
+          />
         </div>
       );
     default: {
