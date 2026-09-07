@@ -2,10 +2,11 @@
 
 import { useEffect, useRef } from "react";
 
+// Live typedb.com `td-floating-dots-background` from main-EVKLRPT7.js.
 const GRID = 50;
-const DOT_COUNT = 36;
-const SPEED_SPAN = 0.35;
-const DOT_FILL = "rgba(2, 218, 201, 0.18)";
+const DOT_COUNT = 75;
+const SPEED_SPAN = 0.5;
+const DOT_FILL = "rgba(0, 150, 100, 0.7)";
 const HEX_Y = 0.5;
 const HEX_X = Math.cos(Math.PI / 6);
 
@@ -80,7 +81,7 @@ class FloatingDot {
       this.y < 0 ||
       this.y > this.canvas.height
     ) {
-      this.reset();
+      Object.assign(this, new FloatingDot(this.canvas, this.ctx));
     }
   }
 
@@ -100,7 +101,6 @@ export function PageBackground() {
       return;
     }
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const dots: FloatingDot[] = [];
 
     const resize = () => {
@@ -111,19 +111,6 @@ export function PageBackground() {
 
     for (let i = 0; i < DOT_COUNT; i += 1) {
       dots.push(new FloatingDot(canvas, ctx));
-    }
-
-    const paint = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      dots.forEach((dot) => {
-        dot.draw();
-      });
-    };
-
-    if (reduced) {
-      paint();
-      window.addEventListener("resize", resize);
-      return () => window.removeEventListener("resize", resize);
     }
 
     let frame = 0;
