@@ -355,6 +355,14 @@ main,
   z-index: 1;
 }
 
+.map-progress span {
+  display: block;
+  height: 100%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: var(--accent);
+}
+
 .map-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
