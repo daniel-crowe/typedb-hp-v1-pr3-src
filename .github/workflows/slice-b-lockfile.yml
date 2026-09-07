@@ -1,0 +1,35 @@
+name: slice-b-lockfile
+on:
+  push:
+    paths:
+      - .github/workflows/slice-b-lockfile.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  commit-lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch and verify lockfile
+        run: |
+          set -euo pipefail
+          URL='https://tmpfiles.org/dl/1788792446.5636411a895da1b1/wdwD4lZoNUFw/package-lock.json'
+          EXPECT='2e372eb28c493cc54e37e8f19c4bb66664d2de7699d647a10edf683748cb3211'
+          curl -fsSL "$URL" -o package-lock.json
+          GOT=$(sha256sum package-lock.json | awk '{print $1}')
+          echo "got=$GOT"
+          test "$GOT" = "$EXPECT"
+          test "$(wc -c < package-lock.json)" = "281235"
+      - name: Commit lockfile
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add package-lock.json
+          if git diff --cached --quiet; then
+            echo 'lockfile already current'
+            exit 0
+          fi
+          git commit -m 'Slice B: A1 hero remaining files'
+          git push
