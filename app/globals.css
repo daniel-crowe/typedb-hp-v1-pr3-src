@@ -482,7 +482,7 @@ main,
 
 .walk-edge::before,
 .walk-edge::after {
-  content: "\u2014";
+  content: "—";
   color: var(--raised);
 }
 
