@@ -896,7 +896,7 @@ main,
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 36px 0 18px;
+  margin: 20px 0 18px;
 }
 
 .tablist button {
@@ -984,6 +984,7 @@ main,
   align-items: start;
   padding: 22px 24px 22px 16px;
   border-bottom: 1px solid var(--raised);
+  cursor: pointer;
 }
 
 .stack-stage:last-of-type {
@@ -1109,7 +1110,7 @@ main,
   font-weight: 500;
 }
 
-.domain-graphic span {
+.domain-graphic figcaption span {
   color: var(--mute);
   font-size: 14px;
 }
@@ -1148,20 +1149,27 @@ main,
   background: var(--accent);
 }
 
-.lifecycle-band article {
+.lifecycle-step {
   position: relative;
   z-index: 1;
+  width: 100%;
+  margin: 0;
   padding: 20px 18px;
   border: 1px solid var(--raised);
   border-radius: 6px;
   background: #12101d;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
-.lifecycle-band article.is-on {
+.lifecycle-step.is-on,
+.lifecycle-step[aria-pressed="true"] {
   border-color: color-mix(in srgb, var(--accent) 50%, var(--raised));
 }
 
-.lifecycle-band.is-poster article,
+.lifecycle-band.is-poster .lifecycle-step,
 .lifecycle-band.is-poster .lifecycle-fill {
   opacity: 1;
 }
@@ -1209,6 +1217,111 @@ main,
   font-weight: 500;
   letter-spacing: -0.04em;
   line-height: 1.12;
+}
+
+.suite-stage {
+  cursor: pointer;
+}
+
+.stack-stage:focus-visible,
+.suite-stage:focus-visible,
+.lifecycle-step:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.meaning-graphic {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 18px;
+}
+
+.meaning-graphic [data-show] {
+  opacity: 0;
+}
+
+.meaning-graphic[data-meaning-phase="ingest"] [data-show="ingest"],
+.meaning-graphic[data-meaning-phase="update"] [data-show="update"],
+.meaning-graphic[data-meaning-phase="enforce"] [data-show="enforce"] {
+  opacity: 1;
+}
+
+.meaning-col-label {
+  fill: var(--mute-2);
+  font-family: var(--font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.meaning-phase-frame {
+  fill: #12101d;
+  stroke: color-mix(in srgb, var(--accent) 28%, var(--raised));
+}
+
+.meaning-note {
+  fill: var(--ink);
+  font-size: 13px;
+}
+
+.meaning-fail-line {
+  fill: var(--danger);
+  font-family: var(--font-family-code);
+  font-size: 12px;
+}
+
+.meaning-fail rect {
+  stroke: var(--danger);
+}
+
+.meaning-subtype rect {
+  stroke: var(--accent);
+}
+
+.meaning-subtype-edge {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+
+.scrub-back {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.scrub-back-btn {
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--raised);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--accent) 10%, #12101d);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.scrub-back-btn:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--raised));
+}
+
+.scrub-back-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.scrub-back-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.scrub-back-pos {
+  margin: 0;
+  color: var(--mute);
+  font-size: 13px;
 }
 
 .suite-board {
@@ -1350,6 +1463,10 @@ main,
 
 .typed-node.entity .typed-kind {
   fill: var(--entity);
+}
+
+.typed-node.attribute .typed-kind {
+  fill: var(--attribute);
 }
 
 .typed-node.relation .typed-kind,
