@@ -11,6 +11,7 @@ export const copy = {
       { label: "Docs", href: urls.docs },
       { label: "Cloud", href: urls.cloud },
       { label: "Studio", href: urls.studio },
+      { label: "Use cases", href: urls.useCasesPage },
       { label: "Blog", href: urls.blog },
       { label: "GitHub", href: urls.github },
     ],
@@ -23,7 +24,6 @@ export const copy = {
     secondary: { label: "Explore docs", href: urls.docs },
   },
   s1: {
-    eyebrow: "In practice",
     h2: "Where does the domain map live today?",
     lede: "TypeDB sits in the stack as the store that holds the domain map. People and AI query that map instead of rebuilding it.",
     tabs: {
@@ -84,7 +84,6 @@ export const copy = {
       "Alice, the typedb repository, and resource-ownership are the live homepage teaching example. They are not a customer.",
   },
   s2: {
-    eyebrow: "What having it means",
     h2: "What does the schema enforce?",
     lede: "Three consequences of putting domain meaning in TypeDB.",
     props: [
@@ -119,9 +118,8 @@ export const copy = {
     },
   },
   s3: {
-    eyebrow: "Jobs",
-    h2: "Work a visitor already has",
-    lede: "Four jobs. Each one is a typed model in TypeDB, not a logo wall.",
+    h2: "What problem are you trying to hold in one model?",
+    lede: "Four problems teams already have. Each one is a typed model in TypeDB.",
     items: [
       {
         id: "code-graph",
@@ -162,43 +160,41 @@ export const copy = {
     ],
   },
   s4: {
-    eyebrow: "The insight",
-    sentence:
-      "Your domain’s meaning lives in docs, prompts, and application code, not enforced in the database, so people and AI keep rebuilding different versions of the same world.",
+    sentence: "Your schema is your type system is your semantic layer.",
+    marks: ["schema", "type system", "semantic layer"],
   },
   s5: {
-    eyebrow: "One project",
-    h2: "Cloud, the database, Studio, and TypeQL on the same model",
-    lede: "Open Studio on Cloud. Define a domain model in TypeQL. Community Edition is the same engine. This is not a customer diary.",
-    stages: [
-      {
-        id: "cloud",
-        label: "Cloud",
-        title: "Open a managed database",
-        body: "TypeDB Cloud is fully managed TypeDB on AWS or GCP.",
-        href: urls.cloud,
-        hrefLabel: "TypeDB Cloud",
-      },
+    h2: "TypeDB products for engineers",
+    lede: "The engine, Cloud, Studio, and TypeQL. Same model. This is a product suite, not a project diary.",
+    products: [
       {
         id: "database",
-        label: "Database",
-        title: "The engine holds the schema",
-        body: "Relations have named roles. A fact can connect more than two things. Schema is enforced on write.",
+        label: "TypeDB",
+        title: "The database",
+        body: "The engine holds the schema. Relations have named roles. A fact can connect more than two things. Schema is enforced on write.",
         href: urls.whatIs,
         hrefLabel: "What is TypeDB",
       },
       {
+        id: "cloud",
+        label: "TypeDB Cloud",
+        title: "Managed TypeDB",
+        body: "Fully managed TypeDB on AWS or GCP. Open an instance and work the same schema.",
+        href: urls.cloud,
+        hrefLabel: "TypeDB Cloud",
+      },
+      {
         id: "studio",
-        label: "Studio",
-        title: "Work the same instance",
-        body: "Studio is the official web and desktop environment on that database.",
+        label: "TypeDB Studio",
+        title: "Web and desktop environment",
+        body: "Studio is the official environment on that database. Define types and run TypeQL against the live schema.",
         href: urls.studio,
         hrefLabel: "TypeDB Studio",
       },
       {
         id: "typeql",
         label: "TypeQL",
-        title: "Define the model in the query language",
+        title: "The query language",
         body: "TypeQL is how the schema and the questions are written. Community Edition runs the same engine.",
         href: urls.docs,
         hrefLabel: "TypeQL docs",
@@ -214,58 +210,90 @@ export const copy = {
   repository plays resource-ownership:resource;`,
   },
   s6: {
-    eyebrow: "From here",
-    h2: "Three live paths",
-    lede: "The database can hold the map. Start on Cloud, install Community Edition, or read how TypeQL works.",
+    h2: "How do you want to run TypeDB?",
+    lede: "Three paths. Cloud is managed. Install is Community Edition on your machine. Docs are the schema and TypeQL first.",
     steps: [
       {
         n: "01",
-        label: "Try Cloud",
-        body: "Fully managed TypeDB on AWS or GCP.",
+        label: "Open TypeDB Cloud",
+        body: "Create a managed database on AWS or GCP. No local install.",
         href: urls.cloud,
       },
       {
         n: "02",
-        label: "Install",
-        body: "Community Edition on the install page.",
+        label: "Install Community Edition",
+        body: "Run the same engine locally from the install page.",
         href: urls.install,
       },
       {
         n: "03",
-        label: "Read the docs",
-        body: "TypeQL, schema, and drivers.",
+        label: "Read TypeQL in the docs",
+        body: "Schema, roles, and drivers before you write application code.",
         href: urls.docs,
       },
     ],
   },
-  s7: {
-    eyebrow: "People",
-    h2: "Ways in",
-    lede: "Contribute on GitHub. Collaborate on Discord. Follow the work on the blog. Event stills are not on this page.",
-    ways: [
+  metrics: {
+    h2: "What we can source today",
+    lede: "Numbers from the public typedb/typedb GitHub repository. Community size is omitted. This page does not invent it.",
+    items: [
       {
-        verb: "Contribute",
-        label: "GitHub",
+        value: "4,443",
+        label: "GitHub stars",
         href: urls.github,
-        body: "The TypeDB engine and drivers.",
+        // Source: GET https://api.github.com/repos/typedb/typedb 2026-09-07 stargazers_count
       },
       {
-        verb: "Collaborate",
-        label: "Discord",
-        href: urls.discord,
-        body: "The live community invite.",
+        value: "372",
+        label: "GitHub forks",
+        href: urls.github,
+        // Source: GET https://api.github.com/repos/typedb/typedb 2026-09-07 forks_count
       },
       {
-        verb: "Converse",
-        label: "Blog",
-        href: urls.blog,
-        body: "Engineering and case write-ups.",
+        value: "2016",
+        label: "Repository created",
+        href: urls.github,
+        // Source: GET https://api.github.com/repos/typedb/typedb created_at 2016-07-11
       },
     ],
+  },
+  industries: {
+    h2: "Which domains does TypeDB already document?",
+    lede: "Cribbed from the TypeDB use-cases docs. Each card links to that docs page. Graph and hypergraph index entries had no stable docs URL at write time, so they are omitted.",
+    items: [
+      {
+        id: "robotics",
+        title: "Robotics",
+        body: "TypeDB models heterogeneous worlds, datasets, and interactions. The official robotics example is robotic navigation of a floorplan. Docs credit a real-world usage developed by Joris Sijs at TNO.",
+        href: urls.useCasesRobotics,
+        hrefLabel: "Robotics docs",
+      },
+      {
+        id: "iam",
+        title: "IAM",
+        body: "TypeDB models identity, resources, and permission systems. The documented schema enforces permissions, ownership, and segregation of duties across subjects, objects, and actions.",
+        href: urls.useCasesIam,
+        hrefLabel: "IAM docs",
+      },
+      {
+        id: "cybersecurity",
+        title: "Cybersecurity",
+        body: "The polymorphic model fits cyber threat intelligence. Official TypeDB CTI work implements STIX 2.1: threat actors, campaigns, indicators, and infrastructure as typed relations.",
+        href: urls.useCasesCyber,
+        hrefLabel: "Cybersecurity docs",
+      },
+      {
+        id: "ai",
+        title: "AI",
+        body: "Docs describe TypeDB’s schema as context for AI applications: unstructured sources written into a typed graph, prompt-guided TypeQL, and the TypeDB MCP Server.",
+        href: urls.useCasesAi,
+        hrefLabel: "AI docs",
+      },
+    ],
+    more: { label: "All cribbed use cases", href: urls.useCasesPage },
     proof: {
-      eyebrow: "Named work",
       h2: "Two projects we can name",
-      lede: "Proof we already have. Not the jobs above.",
+      lede: "Proof we already have. Not the problems above.",
       items: [
         {
           name: "Origin Sciences",
@@ -284,12 +312,48 @@ export const copy = {
       ],
     },
   },
+  close: {
+    h2: "Start on one of the three paths",
+    lede: "Cloud, Community Edition, or the docs. The footer has the rest of the live site.",
+  },
+  useCasesPage: {
+    title: "TypeDB use cases",
+    h2: "Use cases cribbed from the docs",
+    lede: "Short versions of the official TypeDB use-case docs. Each one links to the full page. This is not a new product claim.",
+  },
   footer: {
-    links: [
-      { label: "What is TypeDB", href: urls.whatIs },
-      { label: "Community Edition", href: urls.communityEdition },
-      { label: "Editions", href: urls.editions },
-      { label: "Discord", href: urls.discord },
+    columns: [
+      {
+        title: "Product",
+        links: [
+          { label: "What is TypeDB", href: urls.whatIs },
+          { label: "TypeDB Cloud", href: urls.cloud },
+          { label: "TypeDB Studio", href: urls.studio },
+          { label: "Community Edition", href: urls.communityEdition },
+          { label: "Editions", href: urls.editions },
+        ],
+      },
+      {
+        title: "Docs",
+        links: [
+          { label: "Documentation", href: urls.docs },
+          { label: "Install", href: urls.install },
+          { label: "Use cases", href: urls.useCasesPage },
+          { label: "Use-case docs", href: urls.useCasesIndex },
+        ],
+      },
+      {
+        title: "Community",
+        links: [
+          { label: "GitHub", href: urls.github },
+          { label: "Discord", href: urls.discord },
+          { label: "Blog", href: urls.blog },
+        ],
+      },
+      {
+        title: "TypeDB",
+        links: [{ label: "typedb.com", href: urls.home }],
+      },
     ],
   },
 } as const;
