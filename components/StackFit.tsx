@@ -7,7 +7,6 @@ import { useId, useRef, useState } from "react";
 import { copy } from "@/lib/copy";
 import { phaseFromProgress, seekScrub } from "@/lib/scrub-seek";
 import { ProcessGraph } from "./ProcessGraph";
-import { ScrubBack } from "./ScrubBack";
 import { TypedFactGraph } from "./TypedFactGraph";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -102,7 +101,6 @@ export function StackFit() {
   const trigger = useRef<ScrollTrigger | null>(null);
   const applyRef = useRef<(index: number) => void>(() => {});
   const [tab, setTab] = useState<TabId>("have-graph");
-  const [activeIndex, setActiveIndex] = useState(0);
   const tabListId = useId();
 
   useGSAP(
@@ -121,7 +119,6 @@ export function StackFit() {
           return;
         }
         last = index;
-        setActiveIndex((current) => (current === index ? current : index));
         stages.forEach((node, i) => {
           const on = i <= index;
           node.classList.toggle("is-on", on);
@@ -267,18 +264,6 @@ export function StackFit() {
             </article>
           ))}
         </div>
-        <ScrubBack
-          index={activeIndex}
-          count={STAGE_KEYS.length}
-          onPrevious={() => {
-            const previous = Math.max(0, activeIndex - 1);
-            if (trigger.current) {
-              seekScrub(trigger.current, previous, STAGE_KEYS.length);
-              return;
-            }
-            applyRef.current(previous);
-          }}
-        />
       </div>
     </section>
   );
