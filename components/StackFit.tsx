@@ -5,6 +5,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useId, useRef, useState } from "react";
 import { copy } from "@/lib/copy";
+import { ProcessGraph } from "./ProcessGraph";
+import { TypedFactGraph } from "./TypedFactGraph";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -41,11 +43,14 @@ function AskVisual() {
 function LookVisual({ tab }: { tab: TabId }) {
   if (tab === "have-graph") {
     return (
-      <div className="edge-walk">
-        <span className="walk-node">Alice</span>
-        <span className="walk-edge">OWNS</span>
-        <span className="walk-node">typedb</span>
-      </div>
+      <ProcessGraph
+        label="A property graph answers with a binary edge walk"
+        nodes={[
+          { kind: "step", name: "Alice" },
+          { kind: "step", name: "typedb" },
+        ]}
+        edges={["OWNS"]}
+      />
     );
   }
   return (
@@ -58,40 +63,7 @@ function LookVisual({ tab }: { tab: TabId }) {
 }
 
 function StoreVisual() {
-  return (
-    <div className="stack-store">
-      <div className="node-card entity">
-        <div className="node-head">
-          <span className="node-kind">entity</span>
-          <span className="node-name">user</span>
-        </div>
-        <dl className="node-row">
-          <dt>name</dt>
-          <dd>Alice</dd>
-        </dl>
-      </div>
-      <div className="stack-roles">
-        <span className="role-tag">owner</span>
-        <span className="role-tag">resource</span>
-      </div>
-      <div className="node-card relation">
-        <div className="node-head">
-          <span className="node-kind">relation</span>
-          <span className="node-name">resource-ownership</span>
-        </div>
-      </div>
-      <div className="node-card entity resource">
-        <div className="node-head">
-          <span className="node-kind">entity</span>
-          <span className="node-name">repository</span>
-        </div>
-        <dl className="node-row">
-          <dt>name</dt>
-          <dd>typedb</dd>
-        </dl>
-      </div>
-    </div>
-  );
+  return <TypedFactGraph id="stack-store" compact caption="TypeDB stores the fact, not a pair of edges." />;
 }
 
 function WriteVisual() {
