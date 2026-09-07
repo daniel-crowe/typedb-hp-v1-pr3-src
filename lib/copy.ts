@@ -4,7 +4,7 @@ export const copy = {
   meta: {
     title: "TypeDB — a knowledge graph your AI can reason over",
     description:
-      "TypeDB holds and enforces domain meaning in the database. People stop rebuilding the map. AI gets one world to reason over.",
+      "TypeDB holds and enforces domain meaning in the database. AI gets one world to reason over.",
   },
   header: {
     links: [
@@ -24,7 +24,7 @@ export const copy = {
   },
   s1: {
     eyebrow: "In practice",
-    h2: "Where TypeDB sits",
+    h2: "Where does the domain map live today?",
     lede: "TypeDB sits in the stack as the store that holds the domain map. People and AI query that map instead of rebuilding it.",
     tabs: {
       haveGraph: {
@@ -85,36 +85,36 @@ export const copy = {
   },
   s2: {
     eyebrow: "What having it means",
-    h2: "The database holds the map",
+    h2: "What does the schema enforce?",
     lede: "Three consequences of putting domain meaning in TypeDB.",
     props: [
       {
-        title: "The database holds and enforces domain meaning",
-        body: "Entities, relations, and attributes are typed. A fact that does not fit the schema does not land.",
+        title: "Schema is the type system",
+        body: "Entities, relations, and attributes are types. A write is an instance of those types, not a hint left in application code.",
       },
       {
-        title: "People stop rebuilding the map",
-        body: "Docs, prompts, and application code stop being where the model is reinvented on every question.",
+        title: "Relations can be n-party",
+        body: "A fact can carry more than two roles. Employment can link employee, employer, and the project they work on as one relation.",
       },
       {
-        title: "AI gets one world to reason over",
-        body: "Queries hit the same enforced model people write to. The prompt does not have to reconstruct the join.",
+        title: "The database enforces",
+        body: "A write or query that breaks a role or type fails with an error. TypeDB does not suggest a repair. Agents can introspect the schema.",
       },
     ],
     graphic: {
-      title: "The domain map, held in one place",
-      lede: "Facts enter, change, and stay valid against the same schema.",
+      title: "Ingest, update, enforce",
+      lede: "The same type system is production.",
       ingest: {
         label: "Ingest",
-        body: "Writes arrive as typed facts: entities, relations, named roles.",
+        body: "Schema is the type system. Writes arrive as instances: entities, n-party relations, attributes.",
       },
       update: {
         label: "Update",
-        body: "The map changes in the database. People and AI read the same version.",
+        body: "Production is the model. A change is another write. Subtype queries still see the specialized instance.",
       },
       enforce: {
         label: "Enforce",
-        body: "A write that does not play a declared role fails here.",
+        body: "TypeDB enforces. It does not suggest. A role or type break is a query error. Agents introspect the schema instead of inventing the join.",
       },
     },
   },
