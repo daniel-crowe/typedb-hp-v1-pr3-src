@@ -18,7 +18,7 @@ export const copy = {
   },
   hero: {
     h1: "A knowledge graph your AI can reason over",
-    sub: "AI cannot reason over a world the organization has not fixed in one place. Today that world is scattered across docs, prompts, and application code. With TypeDB, the database holds and enforces domain meaning. People stop rebuilding the map. AI gets one world to reason over.",
+    sub: "AI cannot reason over a world the organization has not fixed in one place. Today that world is scattered across docs, prompts, and application code. With TypeDB, the database holds and enforces domain meaning, giving agents a source of truth leading to a deeper understanding and more token efficient workflows.",
     primary: { label: "Try Cloud", href: urls.cloud },
     secondary: { label: "Explore docs", href: urls.docs },
   },
