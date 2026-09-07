@@ -3,9 +3,9 @@
 import { useEffect, useRef } from "react";
 
 const GRID = 50;
-const DOT_COUNT = 75;
-const SPEED_SPAN = 0.5;
-const DOT_FILL = "rgba(0, 150, 100, 0.7)";
+const DOT_COUNT = 36;
+const SPEED_SPAN = 0.35;
+const DOT_FILL = "rgba(2, 218, 201, 0.18)";
 const HEX_Y = 0.5;
 const HEX_X = Math.cos(Math.PI / 6);
 
