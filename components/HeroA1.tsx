@@ -1,18 +1,26 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { HeroA1Svg } from "./HeroA1Svg";
 
 const HeroA1Canvas = dynamic(() => import("./HeroA1Canvas"), { ssr: false });
 
+function subscribe() {
+  return () => {};
+}
+
+function clientTrue() {
+  return true;
+}
+
+function serverFalse() {
+  return false;
+}
+
 export function HeroA1() {
   const [live, setLive] = useState(false);
-  const [mount, setMount] = useState(false);
-
-  useEffect(() => {
-    setMount(true);
-  }, []);
+  const mount = useSyncExternalStore(subscribe, clientTrue, serverFalse);
 
   return (
     <figure
