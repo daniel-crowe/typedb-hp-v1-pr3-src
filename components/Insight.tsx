@@ -1,7 +1,7 @@
 import { copy } from "@/lib/copy";
 
 function markInsight(sentence: string, marks: readonly string[]) {
-  const pattern = new RegExp(`(${marks.map((mark) => mark.replace(/[.*+?^${}()|[\]\]/g, "\\$&")).join("|")})`, "g");
+  const pattern = new RegExp(`(${marks.map((mark) => mark.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`, "g");
   const parts = sentence.split(pattern);
   return parts.map((part, index) =>
     marks.includes(part) ? (

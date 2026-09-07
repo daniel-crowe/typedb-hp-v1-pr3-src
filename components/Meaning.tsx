@@ -7,7 +7,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { copy } from "@/lib/copy";
 import { phaseFromProgress, seekScrub } from "@/lib/scrub-seek";
 import { MeaningGraphic, type MeaningPhase } from "./MeaningGraphic";
-import { ScrubBack } from "./ScrubBack";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -127,17 +126,6 @@ export function Meaning() {
               ))}
             </div>
             <MeaningGraphic phase={phase} />
-            <ScrubBack
-              index={STEPS.indexOf(phase)}
-              count={STEPS.length}
-              onPrevious={() => {
-                const current = STEPS.indexOf(phase);
-                const previous = Math.max(0, current - 1);
-                const key = STEPS[previous] ?? "ingest";
-                setPhase(key);
-                seekScrub(trigger.current, previous, STEPS.length);
-              }}
-            />
           </div>
         </figure>
 
