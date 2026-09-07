@@ -5,7 +5,9 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useId, useRef, useState } from "react";
 import { copy } from "@/lib/copy";
+import { phaseFromProgress, seekScrub } from "@/lib/scrub-seek";
 import { ProcessGraph } from "./ProcessGraph";
+import { ScrubBack } from "./ScrubBack";
 import { TypedFactGraph } from "./TypedFactGraph";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -63,7 +65,7 @@ function LookVisual({ tab }: { tab: TabId }) {
 }
 
 function StoreVisual() {
-  return <TypedFactGraph id="stack-store" compact caption="TypeDB stores the fact, not a pair of edges." />;
+  return <TypedFactGraph id="stack-store" compact />;
 }
 
 function WriteVisual() {
@@ -97,9 +99,11 @@ function StageVisual({ tab, stage }: { tab: TabId; stage: StageKey }) {
 
 export function StackFit() {
   const root = useRef<HTMLElement>(null);
+  const trigger = useRef<ScrollTrigger | null>(null);
+  const applyRef = useRef<(index: number) => void>(() => {});
   const [tab, setTab] = useState<TabId>("have-graph");
+  const [activeIndex, setActiveIndex] = useState(0);
   const tabListId = useId();
-  const active = tab === "have-graph" ? copy.s1.tabs.haveGraph : copy.s1.tabs.noGraph;
 
   useGSAP(
     () => {
@@ -110,6 +114,33 @@ export function StackFit() {
 
       const stages = section.querySelectorAll<HTMLElement>("[data-stack-stage]");
       const spine = section.querySelector<HTMLElement>(".stack-spine-fill");
+
+      let last = -1;
+      const apply = (index: number) => {
+        if (index === last) {
+          return;
+        }
+        last = index;
+        setActiveIndex((current) => (current === index ? current : index));
+        stages.forEach((node, i) => {
+          const on = i <= index;
+          node.classList.toggle("is-on", on);
+          gsap.to(node, {
+            autoAlpha: on ? 1 : 0.28,
+            y: on ? 0 : 18,
+            duration: 0.2,
+            overwrite: "auto",
+          });
+        });
+        if (spine) {
+          gsap.to(spine, {
+            scaleY: (index + 1) / STAGE_KEYS.length,
+            duration: 0.2,
+            overwrite: "auto",
+          });
+        }
+      };
+      applyRef.current = apply;
 
       if (reducedMotionOn()) {
         section.classList.add("is-poster");
@@ -133,32 +164,13 @@ export function StackFit() {
           start: "top 78%",
           end: "bottom 32%",
           scrub: 0.7,
+          onUpdate: (self) => {
+            apply(phaseFromProgress(self.progress, STAGE_KEYS.length));
+          },
         },
       });
-
-      STAGE_KEYS.forEach((key, index) => {
-        const node = section.querySelector<HTMLElement>(`[data-stack-stage="${key}"]`);
-        if (!node) {
-          return;
-        }
-        const at = index * 0.4;
-        timeline.to(
-          node,
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.38,
-            ease: "power2.out",
-            onStart: () => {
-              node.classList.add("is-on");
-            },
-          },
-          at,
-        );
-        if (spine) {
-          timeline.to(spine, { scaleY: (index + 1) / STAGE_KEYS.length, duration: 0.38, ease: "none" }, at);
-        }
-      });
+      timeline.to({}, { duration: 1 });
+      trigger.current = timeline.scrollTrigger ?? null;
     },
     { scope: root, dependencies: [tab] },
   );
@@ -166,9 +178,7 @@ export function StackFit() {
   return (
     <section className="section" ref={root} id="in-practice">
       <div className="wrap">
-        <p className="eyebrow">{copy.s1.eyebrow}</p>
         <h2 className="section-title">{copy.s1.h2}</h2>
-        <p className="lede">{copy.s1.lede}</p>
 
         <div
           className="tablist"
@@ -206,14 +216,6 @@ export function StackFit() {
           </button>
         </div>
 
-        <p className="stack-job">{active.job}</p>
-        <div className="stack-layers" aria-hidden="true">
-          <span>People / AI</span>
-          <span>{tab === "have-graph" ? "Property graph" : "Notes / prompts"}</span>
-          <span className="is-here">TypeDB</span>
-          <span>Domain map</span>
-        </div>
-
         <div
           className="stack-board"
           role="tabpanel"
@@ -224,8 +226,34 @@ export function StackFit() {
           <div className="stack-spine" aria-hidden="true">
             <span className="stack-spine-fill" />
           </div>
-          {STAGE_KEYS.map((key) => (
-            <article key={`${tab}-${key}`} className="stack-stage" data-stack-stage={key}>
+          {STAGE_KEYS.map((key, index) => (
+            <article
+              key={`${tab}-${key}`}
+              className="stack-stage"
+              data-stack-stage={key}
+              tabIndex={0}
+              role="button"
+              aria-label={`${copy.s1.stages[key].label}: ${
+                tab === "have-graph" ? copy.s1.haveGraph[key].title : copy.s1.noGraph[key].title
+              }`}
+              onClick={() => {
+                if (trigger.current) {
+                  seekScrub(trigger.current, index, STAGE_KEYS.length);
+                  return;
+                }
+                applyRef.current(index);
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  if (trigger.current) {
+                    seekScrub(trigger.current, index, STAGE_KEYS.length);
+                    return;
+                  }
+                  applyRef.current(index);
+                }
+              }}
+            >
               <p className="stack-stage-index">
                 <span>{copy.s1.stages[key].index}</span>
                 {copy.s1.stages[key].label}
@@ -239,7 +267,18 @@ export function StackFit() {
             </article>
           ))}
         </div>
-        <p className="caveat">{copy.s1.sharedNote}</p>
+        <ScrubBack
+          index={activeIndex}
+          count={STAGE_KEYS.length}
+          onPrevious={() => {
+            const previous = Math.max(0, activeIndex - 1);
+            if (trigger.current) {
+              seekScrub(trigger.current, previous, STAGE_KEYS.length);
+              return;
+            }
+            applyRef.current(previous);
+          }}
+        />
       </div>
     </section>
   );
