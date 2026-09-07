@@ -5,7 +5,6 @@ import { copy } from "@/lib/copy";
 import { darkmode, monaco } from "./fonts";
 import "./fonts.css";
 import "./globals.css";
-import "./craft.css";
 
 export const metadata: Metadata = {
   title: copy.meta.title,

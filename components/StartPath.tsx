@@ -4,7 +4,6 @@ export function StartPath() {
   return (
     <section className="section" id="start">
       <div className="wrap">
-        <p className="eyebrow">{copy.s6.eyebrow}</p>
         <h2 className="section-title">{copy.s6.h2}</h2>
         <p className="lede">{copy.s6.lede}</p>
         <ol className="start-steps">

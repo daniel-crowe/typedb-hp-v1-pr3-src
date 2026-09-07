@@ -14,4 +14,10 @@ export const urls = {
   cti: "https://typedb.com/use-cases/cyber-threat-intelligence",
   originRepo: "https://github.com/originsciences/epigraph",
   brgmBlog: "https://typedb.com/blog/from-geoscience-to-decision-making",
+  useCasesIndex: "https://typedb.com/docs/use-cases",
+  useCasesRobotics: "https://typedb.com/docs/use-cases/robotics",
+  useCasesIam: "https://typedb.com/docs/use-cases/iam",
+  useCasesCyber: "https://typedb.com/docs/use-cases/cybersecurity",
+  useCasesAi: "https://typedb.com/docs/use-cases/ai",
+  useCasesPage: "/use-cases",
 } as const;
