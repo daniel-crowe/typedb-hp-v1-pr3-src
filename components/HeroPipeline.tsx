@@ -6,7 +6,7 @@ import { QuietField } from "./pipeline/TypedGraphField";
 
 export function HeroPipeline() {
   return (
-    <figure className="hero-pipeline is-slim" data-hero="pipeline" data-pipe="v2" data-hero-slim="1" data-motion="hero-v1">
+    <figure className="hero-pipeline is-slim" data-hero="pipeline" data-pipe="v2" data-hero-slim="1" data-motion="hero-motion-v1">
       <div className="hero-pipe-flow">
         <PipelineFeeds kind="hero" />
 

@@ -38,7 +38,7 @@ export function MeaningCast({ phase }: { phase: MeaningPhase }) {
         </text>
       </g>
 
-      <g className={rejected ? "typed-node relation is-fail" : "typed-node relation"} transform="translate(196 48)">
+      <g className={rejected ? "typed-node relation is-fail" : "typed-node relation"} data-focal="1" transform="translate(196 48)">
         <rect width="168" height="72" rx="6" />
         <text className="typed-kind" x="12" y="20">
           relation ownership

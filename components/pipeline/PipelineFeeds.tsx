@@ -39,7 +39,7 @@ export function PipelineFeeds({ kind }: { kind: FeedKind }) {
         <circle key={`dot-${feed.d}`} className="hero-feed-dot" r="0.55" cx="0" cy="0">
           <animateMotion
             dur="3.2s"
-            begin={kind === "s2" ? `${index * 0.4}s` : "0s"}
+            begin={`${index * 0.4}s`}
             repeatCount="indefinite"
             path={feed.d}
           />
