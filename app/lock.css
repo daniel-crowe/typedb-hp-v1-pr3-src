@@ -954,7 +954,7 @@
   }
 }
 
-/* --- meaning-layered-v2 + suite-row-v2 + motion freeze --- */
+/* --- meaning-layered-v1 + suite-row-v2 + motion freeze --- */
 
 .meaning-layer-rail {
   margin: 28px 0 0;
@@ -1120,6 +1120,107 @@
 
 .meaning-layer.is-roles li.is-fail {
   color: var(--danger);
+}
+
+.meaning-layered[data-meaning-art="layered-v1"] .meaning-layer {
+  padding: 0;
+  overflow: hidden;
+}
+
+.meaning-layered[data-meaning-art="layered-v1"] .meaning-layer-stack {
+  min-height: 312px;
+}
+
+.meaning-window-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 0 10px;
+  border-bottom: 1px solid color-mix(in srgb, #01e870 16%, var(--raised));
+  background: #12101d;
+}
+
+.meaning-window-title {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--mute);
+  font-family: var(--font-family-code);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meaning-window-body {
+  padding: 12px 14px 14px;
+}
+
+.meaning-layered[data-meaning-art="layered-v1"] .meaning-layer table {
+  font-size: 11px;
+}
+
+.meaning-layered[data-meaning-art="layered-v1"] .meaning-layer th,
+.meaning-layered[data-meaning-art="layered-v1"] .meaning-layer td {
+  padding: 5px 8px 5px 0;
+}
+
+.meaning-layered[data-meaning-art="layered-v1"] .meaning-layer tr.is-ok td {
+  color: #01e870;
+}
+
+.meaning-inspect-kicker {
+  margin: 12px 0 6px;
+  color: #01e870;
+  font-family: var(--font-family-code);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.meaning-inspect-kicker:first-child {
+  margin-top: 0;
+}
+
+.meaning-layer.is-roles .meaning-window-body ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.meaning-layer.is-roles .meaning-window-body li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  border-top: 0;
+  color: var(--ink);
+  font-family: var(--font-family-code);
+  font-size: 12px;
+}
+
+.meaning-layer.is-roles .meaning-window-body li span {
+  margin-left: auto;
+  color: var(--mute-2);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.meaning-inspect-dot {
+  display: block;
+  width: 6px;
+  height: 6px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #01e870;
+  box-shadow: 0 0 8px color-mix(in srgb, #01e870 70%, transparent);
+}
+
+.meaning-inspect-dot.is-fail,
+.meaning-layer.is-roles .meaning-window-body li.is-fail .meaning-inspect-dot {
+  background: var(--danger);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--danger) 70%, transparent);
 }
 
 .meaning-pipeline[data-motion="meaning-v1"] .hero-pipe-flow {
