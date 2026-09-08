@@ -14,7 +14,7 @@ const TITLES: Record<MeaningPhase, string> = {
   enforce: "Enforce: a query error, not a suggestion",
 };
 
-export function MeaningGraphic({ phase }: { phase: MeaningPhase }) {
+export function MeaningGraphic({ phase, compact = false }: { phase: MeaningPhase; compact?: boolean }) {
   const root = useRef<SVGSVGElement>(null);
 
   useGSAP(
@@ -26,7 +26,7 @@ export function MeaningGraphic({ phase }: { phase: MeaningPhase }) {
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const duration = reduce ? 0 : 0.32;
 
-      const pane = svg.querySelector<SVGElement>("[data-phase-pane]");
+      const pane = compact ? null : svg.querySelector<SVGElement>("[data-phase-pane]");
       if (pane && !reduce) {
         gsap.fromTo(pane, { autoAlpha: 0.35, y: 8 }, { autoAlpha: 1, y: 0, duration, ease: "power2.out" });
       }
@@ -50,14 +50,14 @@ export function MeaningGraphic({ phase }: { phase: MeaningPhase }) {
         );
       }
     },
-    { dependencies: [phase], scope: root },
+    { dependencies: [phase, compact], scope: root },
   );
 
   return (
     <svg
       ref={root}
-      className="meaning-graphic"
-      viewBox="0 0 720 340"
+      className={compact ? "meaning-graphic is-compact" : "meaning-graphic"}
+      viewBox={compact ? "0 0 180 300" : "0 0 720 340"}
       role="img"
       data-meaning-phase={phase}
       aria-labelledby="meaning-graphic-title"
@@ -95,6 +95,8 @@ export function MeaningGraphic({ phase }: { phase: MeaningPhase }) {
         </text>
       </g>
 
+      {compact ? null : (
+        <>
       <path className="typed-edge" d="M166 60 L200 60 L200 148 L218 148" fill="none" />
       <path className="typed-edge" d="M166 142 L218 142" fill="none" />
       <path className="typed-edge" d="M166 224 L200 224 L200 168 L218 168" fill="none" />
@@ -225,6 +227,8 @@ export function MeaningGraphic({ phase }: { phase: MeaningPhase }) {
           </text>
         </g>
       </g>
+        </>
+      )}
     </svg>
   );
 }
