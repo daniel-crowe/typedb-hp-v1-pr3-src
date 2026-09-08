@@ -257,6 +257,10 @@ main,
   min-height: 380px;
 }
 
+[data-pipe="v2"] .hero-pipe-flow {
+  gap: 88px;
+}
+
 .hero-pipe-feeds {
   position: absolute;
   inset: 0;
@@ -270,9 +274,9 @@ main,
 .hero-feed-line {
   fill: none;
   stroke: #6b6680;
-  stroke-width: 0.22;
-  stroke-dasharray: 1.05 1.35;
-  stroke-linejoin: round;
+  stroke-width: 0.14;
+  stroke-dasharray: 1.4 2.2;
+  stroke-linejoin: miter;
 }
 
 .hero-feed-dot {
