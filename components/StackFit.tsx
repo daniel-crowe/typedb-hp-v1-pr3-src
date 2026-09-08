@@ -105,9 +105,9 @@ export function StackFit() {
           aria-labelledby={tab === "have-graph" ? "tab-have-graph" : "tab-no-graph"}
           data-tab={tab}
         >
-          <figure className="s2-pipeline" data-pipe="v2" data-s2="pipeline-v2">
+          <figure className="s2-pipeline" data-pipe="v2" data-s2="pipeline-v2" data-motion="s2-v1">
             <div className="hero-pipe-flow">
-              <PipelineFeeds />
+              <PipelineFeeds kind="s2" />
               <div className="hero-pipe-col" data-col="sources">
                 <p className="hero-pipe-label">Sources & workloads</p>
                 <ul className="hero-pipe-sources is-grid">

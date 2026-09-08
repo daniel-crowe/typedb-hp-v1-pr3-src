@@ -3,6 +3,7 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { copy } from "@/lib/copy";
 import { MeaningCast } from "./MeaningCast";
+import { MeaningLayered } from "./MeaningLayered";
 import { PipelineFeeds } from "./pipeline/PipelineFeeds";
 import { StudioPane } from "./pipeline/StudioPane";
 import { QuietField } from "./pipeline/TypedGraphField";
@@ -107,10 +108,32 @@ function MeaningPhasePane({ phase }: { phase: MeaningPhase }) {
   }
 }
 
+function phaseFromSearch(): MeaningPhase | null {
+  const value = new URLSearchParams(window.location.search).get("phase");
+  switch (value) {
+    case "ingest":
+    case "update":
+    case "enforce":
+      return value;
+    default:
+      return null;
+  }
+}
+
 export function Meaning() {
   const root = useRef<HTMLElement>(null);
-  const [phase, setPhase] = useState<MeaningPhase>("ingest");
+  const [phase, setPhase] = useState<MeaningPhase>("enforce");
   const hold = useRef(false);
+
+  useEffect(() => {
+    const requested = phaseFromSearch();
+    if (requested) {
+      setPhase(requested);
+    }
+    if (new URLSearchParams(window.location.search).get("freeze") === "1") {
+      hold.current = true;
+    }
+  }, []);
 
   useEffect(() => {
     const section = root.current;
@@ -118,7 +141,7 @@ export function Meaning() {
       return;
     }
 
-    if (reducedMotionOn()) {
+    if (reducedMotionOn() || hold.current) {
       section.querySelector(".lifecycle-band")?.classList.add("is-poster");
       return;
     }
@@ -171,8 +194,7 @@ export function Meaning() {
       <div className="wrap">
         <h2 className="section-title">{copy.s2.h2}</h2>
 
-        <figure className="domain-graphic meaning-pipeline" data-pipe="v2" data-meaning-phase={phase}>
-          <div className="lifecycle-band" aria-label="Ingest, update, enforce">
+        <div className="lifecycle-band meaning-layer-rail" aria-label="Ingest, update, enforce">
             {STEPS.map((key, index) => (
               <Fragment key={key}>
                 {index > 0 ? (
@@ -195,10 +217,13 @@ export function Meaning() {
                 </button>
               </Fragment>
             ))}
-          </div>
+        </div>
 
+        <MeaningLayered phase={phase} />
+
+        <figure className="domain-graphic meaning-pipeline" data-pipe="v2" data-meaning-phase={phase} data-motion="meaning-v1">
           <div className="hero-pipe-flow">
-            <PipelineFeeds />
+            <PipelineFeeds kind="meaning" />
             <div className="hero-pipe-col" data-col="sources">
               <p className="hero-pipe-label">{phase === "enforce" ? "Attempted write" : "Type system"}</p>
               <MeaningIngress phase={phase} />
