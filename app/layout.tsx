@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { FontFaces } from "@/components/FontFaces";
+import { FreezeGate } from "@/components/FreezeGate";
 import { PageBackground } from "@/components/PageBackground";
 import { copy } from "@/lib/copy";
 import { darkmode, monaco } from "./fonts";
@@ -25,6 +26,7 @@ export default function RootLayout({
     <html lang="en" className={`${darkmode.variable} ${monaco.variable}`}>
       <body>
         <FontFaces />
+        <FreezeGate />
         <PageBackground />
         {children}
       </body>

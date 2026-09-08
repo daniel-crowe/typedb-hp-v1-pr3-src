@@ -10,12 +10,8 @@ import { Metrics } from "@/components/Metrics";
 import { StackFit } from "@/components/StackFit";
 import { StartPath } from "@/components/StartPath";
 import { Suite } from "@/components/Suite";
-import { TypeqlBlock } from "@/components/TypeqlBlock";
-import { copy } from "@/lib/copy";
 
 export default async function Home() {
-  const typeql = <TypeqlBlock code={copy.s5.typeql} />;
-
   return (
     <>
       <Header />
@@ -25,7 +21,7 @@ export default async function Home() {
         <Meaning />
         <Jobs />
         <Insight />
-        <Suite typeql={typeql} />
+        <Suite />
         <StartPath />
         <Metrics />
         <Industries />
