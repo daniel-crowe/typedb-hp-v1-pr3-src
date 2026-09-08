@@ -103,3 +103,54 @@ html[data-freeze="1"] .page-background,
 .meaning-inspect-dot {
   display: none;
 }
+
+/* S2 MOTION v1: packets + hub pulse on pipeline-v2. Freeze / reduce hold mid-path. */
+
+.s2-pipeline[data-motion="s2-motion-v1"] .typed-node.relation[data-focal="1"] rect {
+  stroke-width: 2.25;
+  animation: s2-hub-glow 1.8s ease-in-out infinite;
+}
+
+@keyframes s2-hub-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 8px color-mix(in srgb, #01e870 55%, transparent));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 18px color-mix(in srgb, #01e870 82%, transparent));
+  }
+}
+
+html[data-freeze="1"] .hero-feed-dot,
+html[data-freeze="1"] .hero-pipe-status::before,
+html[data-freeze="1"] .s2-pipeline[data-motion="s2-motion-v1"] .typed-node.relation[data-focal="1"] rect {
+  animation: none;
+}
+
+html[data-freeze="1"] .hero-feed-dot {
+  display: none;
+}
+
+html[data-freeze="1"] .hero-pipe-status::before {
+  box-shadow: 0 0 8px #01e870;
+}
+
+html[data-freeze="1"] .s2-pipeline[data-motion="s2-motion-v1"] .typed-node.relation[data-focal="1"] rect {
+  filter: drop-shadow(0 0 10px color-mix(in srgb, #01e870 70%, transparent));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-pipe="v2"] .hero-pipe-status::before,
+  .s2-pipeline[data-motion="s2-motion-v1"] .typed-node.relation[data-focal="1"] rect {
+    animation: none;
+  }
+
+  .hero-feed-dot {
+    display: none;
+  }
+
+  .s2-pipeline[data-motion="s2-motion-v1"] .typed-node.relation[data-focal="1"] rect {
+    filter: drop-shadow(0 0 10px color-mix(in srgb, #01e870 70%, transparent));
+  }
+}

@@ -28,16 +28,21 @@ export function PipelineFeeds({ kind }: { kind: FeedKind }) {
   const paths = feedsFor(kind);
 
   return (
-    <svg className="hero-pipe-feeds" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+    <svg className="hero-pipe-feeds" data-feeds={kind} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
       {paths.map((feed) => (
         <path key={feed.d} className="hero-feed-line" d={feed.d} />
       ))}
       {paths.map((feed) => (
         <circle key={`pkt-${feed.d}`} className="hero-feed-packet" cx={feed.mid.x} cy={feed.mid.y} r="0.85" />
       ))}
-      {paths.map((feed) => (
+      {paths.map((feed, index) => (
         <circle key={`dot-${feed.d}`} className="hero-feed-dot" r="0.55" cx="0" cy="0">
-          <animateMotion dur="3.2s" repeatCount="indefinite" path={feed.d} />
+          <animateMotion
+            dur="3.2s"
+            begin={kind === "s2" ? `${index * 0.4}s` : "0s"}
+            repeatCount="indefinite"
+            path={feed.d}
+          />
         </circle>
       ))}
     </svg>
