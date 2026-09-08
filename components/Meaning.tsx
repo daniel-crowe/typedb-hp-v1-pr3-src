@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { copy } from "@/lib/copy";
 import { MeaningCast } from "./MeaningCast";
 import { MeaningLayered } from "./MeaningLayered";
@@ -108,7 +108,14 @@ function MeaningPhasePane({ phase }: { phase: MeaningPhase }) {
   }
 }
 
-function phaseFromSearch(): MeaningPhase | null {
+function subscribeSearch(onStoreChange: () => void) {
+  window.addEventListener("popstate", onStoreChange);
+  return () => {
+    window.removeEventListener("popstate", onStoreChange);
+  };
+}
+
+function readSearchPhase(): MeaningPhase {
   const value = new URLSearchParams(window.location.search).get("phase");
   switch (value) {
     case "ingest":
@@ -116,24 +123,29 @@ function phaseFromSearch(): MeaningPhase | null {
     case "enforce":
       return value;
     default:
-      return null;
+      return "enforce";
   }
+}
+
+function serverSearchPhase(): MeaningPhase {
+  return "enforce";
+}
+
+function readSearchFreeze(): boolean {
+  return new URLSearchParams(window.location.search).get("freeze") === "1";
+}
+
+function serverSearchFreeze(): boolean {
+  return false;
 }
 
 export function Meaning() {
   const root = useRef<HTMLElement>(null);
-  const [phase, setPhase] = useState<MeaningPhase>("enforce");
+  const searchPhase = useSyncExternalStore(subscribeSearch, readSearchPhase, serverSearchPhase);
+  const freeze = useSyncExternalStore(subscribeSearch, readSearchFreeze, serverSearchFreeze);
+  const [heldPhase, setHeldPhase] = useState<MeaningPhase | null>(null);
   const hold = useRef(false);
-
-  useEffect(() => {
-    const requested = phaseFromSearch();
-    if (requested) {
-      setPhase(requested);
-    }
-    if (new URLSearchParams(window.location.search).get("freeze") === "1") {
-      hold.current = true;
-    }
-  }, []);
+  const phase = heldPhase ?? searchPhase;
 
   useEffect(() => {
     const section = root.current;
@@ -141,7 +153,7 @@ export function Meaning() {
       return;
     }
 
-    if (reducedMotionOn() || hold.current) {
+    if (reducedMotionOn() || freeze) {
       section.querySelector(".lifecycle-band")?.classList.add("is-poster");
       return;
     }
@@ -159,8 +171,8 @@ export function Meaning() {
           }
           return;
         }
-        setPhase((current) => {
-          const index = STEPS.indexOf(current);
+        setHeldPhase((current) => {
+          const index = STEPS.indexOf(current ?? searchPhase);
           return STEPS[(index + 1) % STEPS.length] ?? "ingest";
         });
       }, TICK_MS);
@@ -187,7 +199,7 @@ export function Meaning() {
       observer.disconnect();
       stop();
     };
-  }, []);
+  }, [freeze, searchPhase]);
 
   return (
     <section className="section section-proof" ref={root} id="meaning">
@@ -209,7 +221,7 @@ export function Meaning() {
                   aria-pressed={phase === key}
                   onClick={() => {
                     hold.current = true;
-                    setPhase(key);
+                    setHeldPhase(key);
                   }}
                 >
                   <p className="lifecycle-label">{copy.s2.graphic[key].label}</p>
