@@ -1,19 +1,43 @@
 import { copy } from "@/lib/copy";
 
-function ProductMark({ id }: { id: string }) {
-  return (
-    <svg className="suite-mark" viewBox="0 0 32 32" aria-hidden="true">
-      {id === "database" ? <rect x="6" y="6" width="20" height="20" rx="4" /> : null}
-      {id === "cloud" ? <path d="M8 20h16a6 6 0 0 0-1-12 7 7 0 0 0-13 3 5 5 0 0 0-2 9z" /> : null}
-      {id === "studio" ? (
-        <>
-          <rect x="5" y="8" width="22" height="16" rx="3" />
-          <path d="M5 12h22" />
-        </>
-      ) : null}
-      {id === "typeql" ? <text x="6" y="21">QL</text> : null}
-    </svg>
-  );
+type ProductId = (typeof copy.s5.products)[number]["id"];
+
+function ProductMark({ id }: { id: ProductId }) {
+  switch (id) {
+    case "database":
+      return (
+        <svg className="suite-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <ellipse cx="16" cy="8" rx="9" ry="3.6" />
+          <path d="M7 8v11.5c0 2 4 3.6 9 3.6s9-1.6 9-3.6V8" />
+          <path d="M7 13.2c0 2 4 3.6 9 3.6s9-1.6 9-3.6" />
+        </svg>
+      );
+    case "cloud":
+      return (
+        <svg className="suite-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M9.5 21.5h13.2a5.2 5.2 0 0 0 .6-10.4 6.4 6.4 0 0 0-12.2 2.2 4.4 4.4 0 0 0-1.6 8.2z" />
+        </svg>
+      );
+    case "studio":
+      return (
+        <svg className="suite-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <rect x="5" y="7" width="22" height="16" rx="3" />
+          <path d="M5 11.5h22" />
+          <path d="M12.5 20.2 15 22.4l5.2-6.2" />
+        </svg>
+      );
+    case "typeql":
+      return (
+        <svg className="suite-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M13 9.5 8.5 16 13 22.5" />
+          <path d="M19 9.5 23.5 16 19 22.5" />
+        </svg>
+      );
+    default: {
+      const exhausted: never = id;
+      return exhausted;
+    }
+  }
 }
 
 export function Suite() {
@@ -31,6 +55,7 @@ export function Suite() {
               <p>{product.body}</p>
               <a href={product.href} rel="noreferrer">
                 {product.hrefLabel}
+                <span aria-hidden="true"> →</span>
               </a>
             </article>
           ))}

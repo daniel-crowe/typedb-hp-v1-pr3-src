@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useId, useState } from "react";
 import { copy } from "@/lib/copy";
 import { HeroA1Svg } from "./HeroA1Svg";
 import { PipelineFeeds } from "./pipeline/PipelineFeeds";
@@ -18,30 +18,11 @@ const SOURCES: Record<TabId, string[]> = {
 };
 
 export function StackFit() {
-  const root = useRef<HTMLElement>(null);
   const [tab, setTab] = useState<TabId>("have-graph");
-  const [inView, setInView] = useState(false);
   const tabListId = useId();
 
-  useEffect(() => {
-    const section = root.current;
-    if (!section) {
-      return;
-    }
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setInView(true);
-        }
-      },
-      { threshold: 0.2 },
-    );
-    observer.observe(section);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section className="section" ref={root} id="in-practice">
+    <section className="section" id="in-practice">
       <div className="wrap">
         <h2 className="section-title">{copy.s1.h2}</h2>
         <div
@@ -82,7 +63,7 @@ export function StackFit() {
         <p className="stack-job" data-tab={tab}>
           {tab === "have-graph" ? copy.s1.tabs.haveGraph.job : copy.s1.tabs.noGraph.job}
         </p>
-        <ol className={inView ? "stack-rail is-lit" : "stack-rail"} aria-label="Retrieve, Ground, Reason, Persist">
+        <ol className="stack-rail is-lit" aria-label="Retrieve, Ground, Reason, Persist">
           {STAGE_KEYS.map((key) => {
             const stage = copy.s1.stages[key];
             const detail = tab === "have-graph" ? copy.s1.haveGraph[key] : copy.s1.noGraph[key];
@@ -99,7 +80,7 @@ export function StackFit() {
           })}
         </ol>
         <div
-          className={inView ? "stack-board is-lit" : "stack-board"}
+          className="stack-board is-lit"
           role="tabpanel"
           id={tab === "have-graph" ? "panel-have-graph" : "panel-no-graph"}
           aria-labelledby={tab === "have-graph" ? "tab-have-graph" : "tab-no-graph"}
