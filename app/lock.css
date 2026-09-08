@@ -215,27 +215,6 @@
   fill: var(--relation);
 }
 
-.hero-pipe-window-bar {
-  display: flex;
-  align-items: center;
-  min-height: 36px;
-  padding: 0 12px;
-  border-bottom: 1px solid var(--raised);
-  background: #12101d;
-}
-
-.hero-pipe-window-title {
-  color: var(--accent);
-  font-family: var(--font-family-code);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.hero-pipe-ask {
-  margin: 14px 12px 0;
-}
-
 .hero-pipe-result {
   display: grid;
   gap: 8px;
@@ -395,35 +374,32 @@
   padding: 16px 12px 18px;
 }
 
-.stack-stage {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
-  padding: 18px 16px 20px;
-  border: 1px solid var(--raised);
-  border-radius: 8px;
-  background: #12101d;
-  cursor: default;
-}
-
-.stack-stage.is-on {
-  border-color: color-mix(in srgb, var(--accent) 28%, var(--raised));
-}
-
-.stack-question {
-  margin: 0;
-  padding: 10px 12px;
-  border: 1px solid var(--raised);
-  border-radius: 4px;
-  background: #0c0b14;
-  font-family: var(--font-family-code);
-  font-size: 12px;
-  color: var(--ink);
-}
-
 .insight {
-  padding-block: 120px;
+  padding-block: 160px;
   text-align: center;
+}
+
+.job-card,
+.suite-stage {
+  display: flex;
+  flex-direction: column;
+}
+
+.job-visual {
+  display: flex;
+  align-items: center;
+  min-height: 148px;
+}
+
+.suite-board.is-products {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.suite-stage a,
+.job-card a {
+  margin-top: auto;
 }
 
 .insight-sentence {
@@ -440,23 +416,15 @@
   }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 768px) {
   .hero {
-    min-height: auto;
-    padding-top: 20px;
-  }
-
-  .hero-pipe-flow,
-  .stack-board {
-    grid-template-columns: 1fr;
-  }
-
-  .stack-rail {
-    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    padding: 24px 0 48px;
   }
 
   .hero-pipe-flow {
-    gap: 16px;
+    grid-template-columns: 1fr;
+    gap: 12px;
     min-height: 0;
   }
 
@@ -464,8 +432,29 @@
     display: none;
   }
 
+  .hero-pipe-sources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
   .hero-pipe-field {
-    min-height: 220px;
+    min-height: 240px;
+  }
+}
+
+@media (max-width: 860px) {
+  .hero {
+    min-height: auto;
+    padding-top: 20px;
+  }
+
+  .stack-board {
+    grid-template-columns: 1fr;
+  }
+
+  .stack-rail {
+    grid-template-columns: 1fr 1fr;
   }
 
   .insight-sentence {
