@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 :root {
+  --space-section: 104px;
+  --space-insight: 160px;
   --page: #0e0e0e;
   --deep: #151322;
   --panel: #1a182a;
@@ -234,6 +236,10 @@ main,
   padding: 0;
   border: 0;
   background: transparent;
+}
+
+.hero-pipeline.is-slim .hero-pipe-flow {
+  grid-template-columns: minmax(132px, 0.52fr) minmax(0, 2.1fr) minmax(220px, 0.82fr);
 }
 
 .hero-pipeline figcaption {
@@ -559,11 +565,12 @@ main,
 }
 
 .stack-rail-step {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 8px 10px;
   margin: 0;
-  padding: 10px 12px;
+  padding: 12px 14px;
   border: 1px solid var(--raised);
   border-radius: 6px;
   background: #12101d;
@@ -575,6 +582,34 @@ main,
   color: var(--accent);
   font-family: var(--font-family-code);
   font-size: 11px;
+  line-height: 1.4;
+}
+
+.stack-rail-copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.stack-rail-copy strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.stack-rail-title,
+.stack-rail-body {
+  margin: 0;
+}
+
+.stack-rail-title {
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.stack-rail-body {
+  color: var(--mute);
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .stack-rail.is-lit .stack-rail-step.is-on {
@@ -595,8 +630,25 @@ main,
 
 .meaning-phase-pane {
   display: grid;
+  align-content: start;
   gap: 8px;
+  min-height: 280px;
   padding: 16px 12px 18px;
+}
+
+.meaning-pipeline .hero-pipe-col.is-ai,
+.meaning-pipeline .studio-pane {
+  min-height: 320px;
+}
+
+.meaning-closer {
+  margin: 12px 0 0;
+  color: var(--mute);
+  font-size: 13px;
+}
+
+#meaning {
+  overflow-anchor: none;
 }
 
 .meaning-phase-pane p {
@@ -668,7 +720,7 @@ main,
 }
 
 .section {
-  padding: 88px 0;
+  padding: var(--space-section) 0;
 }
 
 .section-proof {
@@ -870,7 +922,7 @@ main,
 
 .walk-edge::before,
 .walk-edge::after {
-  content: "\u2014";
+  content: "—";
   color: var(--raised);
 }
 
@@ -1255,20 +1307,6 @@ main,
     padding-top: 20px;
   }
 
-  .hero-pipe-flow {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    min-height: 0;
-  }
-
-  .hero-pipe-feeds {
-    display: none;
-  }
-
-  .hero-pipe-field {
-    min-height: 220px;
-  }
-
   .stack-rail {
     grid-template-columns: 1fr 1fr;
   }
@@ -1607,9 +1645,16 @@ main,
   color: var(--accent);
 }
 
+.job-card {
+  display: flex;
+  flex-direction: column;
+}
+
 .job-visual {
+  display: flex;
+  align-items: center;
   margin: 0 0 16px;
-  min-height: 72px;
+  min-height: 148px;
 }
 
 .job-graphic {
@@ -1623,7 +1668,7 @@ main,
 }
 
 .insight {
-  padding-block: 120px;
+  padding-block: var(--space-insight);
   text-align: center;
 }
 
@@ -1643,7 +1688,18 @@ main,
 }
 
 .suite-board.is-products {
+  display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.suite-stage {
+  display: flex;
+  flex-direction: column;
+}
+
+.suite-stage a {
+  margin-top: auto;
 }
 
 .suite-name {
@@ -1869,6 +1925,60 @@ main,
   .metric-grid,
   .footer-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1100px) {
+  .hero-pipe-flow {
+    gap: 36px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero[data-hero-mobile="v1"],
+  .hero {
+    gap: 28px;
+    padding: 24px 0 48px;
+  }
+
+  .hero-pipe-flow {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    min-height: 0;
+  }
+
+  .hero-pipe-feeds {
+    display: none;
+  }
+
+  .hero-pipe-col[data-col="sources"] {
+    padding: 12px 14px;
+  }
+
+  .hero-pipe-sources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .hero-pipe-sources li {
+    padding: 6px 12px;
+  }
+
+  .hero-pipe-field {
+    min-height: 200px;
+  }
+
+  .hero-pipe-field.is-focal {
+    min-height: 188px;
+  }
+
+  .hero-pipeline.is-slim .hero-pipe-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-pipeline figcaption {
+    font-size: 12px;
   }
 }
 
