@@ -16,7 +16,7 @@ function markInsight(sentence: string, marks: readonly string[]) {
 
 export function Insight() {
   return (
-    <section className="section insight" id="insight">
+    <section className="section insight" id="insight" data-insight="band-v1">
       <div className="wrap">
         <p className="insight-sentence">{markInsight(copy.s4.sentence, copy.s4.marks)}</p>
       </div>
