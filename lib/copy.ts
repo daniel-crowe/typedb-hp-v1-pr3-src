@@ -163,16 +163,16 @@ export const copy = {
     marks: ["Structure", "enforced", "suggestion"],
   },
   s5: {
-    h2: "TypeDB products for engineers",
-    lede: "The engine, Cloud, Studio, and TypeQL. Same model. This is a product suite, not a project diary.",
+    h2: "TypeDB products",
+    lede: "One schema. Four ways to run it. Community Edition and Enterprise share the engine.",
     products: [
       {
         id: "database",
         label: "TypeDB",
         title: "The database",
         body: "The engine holds the schema. Relations have named roles. A fact can connect more than two things. Schema is enforced on write.",
-        href: urls.whatIs,
-        hrefLabel: "What is TypeDB",
+        href: urls.install,
+        hrefLabel: "Install TypeDB",
       },
       {
         id: "cloud",
@@ -195,7 +195,7 @@ export const copy = {
         label: "TypeQL",
         title: "The query language",
         body: "TypeQL is how the schema and the questions are written. Community Edition runs the same engine.",
-        href: urls.docs,
+        href: urls.typeql,
         hrefLabel: "TypeQL docs",
       },
     ],
@@ -209,7 +209,7 @@ export const copy = {
   repository plays resource-ownership:resource;`,
   },
   s6: {
-    h2: "How do you want to run TypeDB?",
+    h2: "Get running",
     lede: "Three paths. Cloud is managed. Install is Community Edition on your machine. Docs are the schema and TypeQL first.",
     steps: [
       {
@@ -222,13 +222,13 @@ export const copy = {
         n: "02",
         label: "Install Community Edition",
         body: "Run the same engine locally from the install page.",
-        href: urls.install,
+        href: urls.communityEdition,
       },
       {
         n: "03",
         label: "Read TypeQL in the docs",
         body: "Schema, roles, and drivers before you write application code.",
-        href: urls.docs,
+        href: urls.typeql,
       },
     ],
   },
@@ -333,6 +333,7 @@ export const copy = {
         title: "Docs",
         links: [
           { label: "Documentation", href: urls.docs },
+          { label: "TypeQL", href: urls.typeql },
           { label: "Install", href: urls.install },
           { label: "Use cases", href: urls.useCasesPage },
           { label: "Use-case docs", href: urls.useCasesIndex },
