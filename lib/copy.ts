@@ -163,7 +163,7 @@ export const copy = {
     marks: ["Structure", "enforced", "suggestion"],
   },
   s5: {
-    h2: "TypeDB products",
+    h2: "The TypeDB suite",
     lede: "One schema. Four ways to run it. Community Edition and Enterprise share the engine.",
     products: [
       {
@@ -240,16 +240,19 @@ export const copy = {
         value: "4,443",
         label: "GitHub stars",
         href: urls.github,
+        // Source: GET https://api.github.com/repos/typedb/typedb 2026-09-07 stargazers_count
       },
       {
         value: "372",
         label: "GitHub forks",
         href: urls.github,
+        // Source: GET https://api.github.com/repos/typedb/typedb 2026-09-07 forks_count
       },
       {
         value: "2016",
         label: "Repository created",
         href: urls.github,
+        // Source: GET https://api.github.com/repos/typedb/typedb created_at 2016-07-11
       },
     ],
   },
