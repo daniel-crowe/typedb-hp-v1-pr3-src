@@ -1,0 +1,105 @@
+/* Craft FIX: freeze ambient dots + Verisian Meaning rail / layered-v2 */
+
+html[data-freeze="1"] .page-background,
+.page-background[data-hold="1"] {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-background {
+    animation: none;
+  }
+}
+
+.lifecycle-band.meaning-layer-rail,
+.meaning-layer-rail {
+  margin: 28px 0 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+.meaning-layer-rail .lifecycle-step {
+  padding: 12px 14px 14px;
+  border: 1px solid var(--raised);
+  background: transparent;
+  box-shadow: none;
+}
+
+.meaning-layer-rail .lifecycle-step .lifecycle-label {
+  color: var(--mute-2);
+}
+
+.meaning-layer-rail .lifecycle-step.is-on:not([data-lifecycle-step="enforce"]),
+.meaning-layer-rail .lifecycle-step[aria-pressed="true"]:not([data-lifecycle-step="enforce"]) {
+  border-color: color-mix(in srgb, var(--ink) 18%, var(--raised));
+  background: transparent;
+  box-shadow: none;
+}
+
+.meaning-layer-rail .lifecycle-step.is-on:not([data-lifecycle-step="enforce"]) .lifecycle-label,
+.meaning-layer-rail .lifecycle-step[aria-pressed="true"]:not([data-lifecycle-step="enforce"]) .lifecycle-label {
+  color: var(--mute);
+}
+
+.meaning-layer-rail .lifecycle-step.is-on[data-lifecycle-step="enforce"],
+.meaning-layer-rail .lifecycle-step[aria-pressed="true"][data-lifecycle-step="enforce"] {
+  background: #01e870;
+  border-color: #01e870;
+  color: #0e0e0e;
+  box-shadow: none;
+}
+
+.meaning-layer-rail .lifecycle-step.is-on[data-lifecycle-step="enforce"] .lifecycle-label,
+.meaning-layer-rail .lifecycle-step.is-on[data-lifecycle-step="enforce"] p,
+.meaning-layer-rail .lifecycle-step[aria-pressed="true"][data-lifecycle-step="enforce"] .lifecycle-label,
+.meaning-layer-rail .lifecycle-step[aria-pressed="true"][data-lifecycle-step="enforce"] p {
+  color: #0e0e0e;
+}
+
+.meaning-layered {
+  --relation: #01e870;
+  position: relative;
+  isolation: isolate;
+  margin: 16px 0 22px;
+  padding: 18px 12px 20px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, #01e870 18%, var(--raised));
+  border-radius: 10px;
+  background: #0e0e0e;
+}
+
+.meaning-layer-stack {
+  min-height: 228px;
+}
+
+.meaning-layer {
+  padding: 12px 12px 13px;
+  box-shadow: 0 4px 12px color-mix(in srgb, #000 14%, transparent);
+}
+
+.meaning-layer.is-table {
+  margin-right: -56px;
+  margin-top: 14px;
+}
+
+.meaning-layer.is-typeql {
+  margin-left: -28px;
+  margin-right: -28px;
+  box-shadow: 0 6px 16px color-mix(in srgb, #000 16%, transparent);
+}
+
+.meaning-layer.is-roles {
+  margin-left: -56px;
+  margin-top: 20px;
+}
+
+.meaning-layered[data-meaning-art="layered-v1"] .meaning-layer,
+.meaning-window-bar,
+.meaning-window-title,
+.meaning-window-body,
+.meaning-inspect-kicker,
+.meaning-inspect-dot {
+  display: none;
+}
