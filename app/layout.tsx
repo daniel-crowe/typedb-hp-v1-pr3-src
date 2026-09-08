@@ -5,6 +5,7 @@ import { copy } from "@/lib/copy";
 import { darkmode, monaco } from "./fonts";
 import "./fonts.css";
 import "./globals.css";
+import "./lock.css";
 
 export const metadata: Metadata = {
   title: copy.meta.title,
