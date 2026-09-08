@@ -105,12 +105,12 @@ export function StackFit() {
           aria-labelledby={tab === "have-graph" ? "tab-have-graph" : "tab-no-graph"}
           data-tab={tab}
         >
-          <figure className="s2-pipeline" data-pipe="v1" data-s2="pipeline-v1">
+          <figure className="s2-pipeline" data-pipe="v2" data-s2="pipeline-v2">
             <div className="hero-pipe-flow">
               <PipelineFeeds />
               <div className="hero-pipe-col" data-col="sources">
                 <p className="hero-pipe-label">Sources & workloads</p>
-                <ul className="hero-pipe-sources">
+                <ul className="hero-pipe-sources is-grid">
                   {SOURCES[tab].map((chip) => (
                     <li key={chip}>{chip}</li>
                   ))}
@@ -123,21 +123,35 @@ export function StackFit() {
                 </div>
                 <div className="s2-hub-stage">
                   <QuietField seed="a" />
-                  <HeroA1Svg />
+                  <HeroA1Svg idPrefix="s2-a1" />
                 </div>
               </div>
               <div className="hero-pipe-col is-ai" data-col="ai">
                 <StudioPane
                   mode="write-reject"
                   chrome="studio"
-                  query={["insert", "  $p isa person;", "  $o (owner: $p) isa ownership;"]}
+                  files={[
+                    { label: "write.tql", on: true },
+                    { label: "schema.tql" },
+                    { label: "log" },
+                  ]}
+                  query={[
+                    "insert",
+                    '  $a isa person, has name "Alice";',
+                    "  $o isa ownership, has stake 51%;",
+                  ]}
                   violation="Schema violation"
                   reject="person cannot play ownership:owner"
+                  constraints={[
+                    "company plays ownership:owner;",
+                    "person plays directorship:director;",
+                  ]}
                   note={
                     tab === "have-graph"
                       ? copy.s1.haveGraph.persist.body
                       : copy.s1.noGraph.persist.body
                   }
+                  meta={["role mismatch", "tx aborted", "0 commits"]}
                   foot="meaning held · no invalid structure"
                 />
               </div>
