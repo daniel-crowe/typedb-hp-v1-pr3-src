@@ -24,67 +24,66 @@ export const copy = {
     secondary: { label: "Explore docs", href: urls.docs },
   },
   s1: {
-    h2: "Where does the domain map live today?",
-    lede: "TypeDB sits in the stack as the store that holds the domain map. People and AI query that map instead of rebuilding it.",
+    h2: "Context infrastructure",
     tabs: {
       haveGraph: {
         id: "have-graph",
-        label: "Already have a graph",
-        job: "The walk already exists. TypeDB replaces the untyped store.",
+        label: "We've got a graph",
+        job: "If you already run a property graph, roles and constraints often still live in application code. When those rules drift from the stored edges, multi-step work returns answers that look fine and are wrong. Updating that context by hand does not keep up at scale.",
       },
       noGraph: {
         id: "no-graph",
-        label: "No graph yet",
-        job: "The map lives in notes and prompts. TypeDB becomes the store.",
+        label: "Still in docs and prompts",
+        job: "If the domain map still lives in docs, prompts, and application code, someone updates it after the fact. Multi-step inference then runs on a map that lags the product. At scale that lag is the failure.",
       },
     },
     stages: {
-      ask: { index: "01", label: "Ask" },
-      look: { index: "02", label: "Look" },
-      store: { index: "03", label: "Store" },
-      write: { index: "04", label: "Write" },
+      retrieve: { index: "01", label: "Retrieve" },
+      ground: { index: "02", label: "Ground" },
+      reason: { index: "03", label: "Reason" },
+      persist: { index: "04", label: "Persist" },
     },
     haveGraph: {
-      ask: {
-        title: "People, apps, and agents ask the same question",
+      retrieve: {
+        title: "The question hits the stored walk",
         body: "Who owns the typedb repository?",
       },
-      look: {
-        title: "A property graph answers with an edge walk",
-        body: "Alice and typedb are nodes. OWNS is a binary edge. Who is owner is a convention in application code.",
+      ground: {
+        title: "The edge is already there",
+        body: "Alice and typedb are nodes. OWNS is a binary edge. Who is owner is still a convention in application code.",
       },
-      store: {
-        title: "TypeDB sits here: the typed model",
-        body: "The same fact is a resource-ownership relation with roles owner and resource. Schema is enforced on write.",
+      reason: {
+        title: "A longer walk can still be wrong",
+        body: "Roles are not on the edge. Multi-step work can return a wrong owner and still look well-formed.",
       },
-      write: {
-        title: "A mistyped edge is no longer application code’s problem",
-        body: "A write that does not play owner or resource fails in the database.",
+      persist: {
+        title: "TypeDB writes the typed fact",
+        body: "resource-ownership plays owner and resource. A write that misses a role fails in the database.",
       },
     },
     noGraph: {
-      ask: {
-        title: "People and AI still need the same fact",
+      retrieve: {
+        title: "The same question still needs an answer",
         body: "Who owns the typedb repository?",
       },
-      look: {
-        title: "The join is reconstructed from notes and a prompt",
-        body: "Alice, the repository, and who owns it live in docs, prompts, and application code. Nothing in a store rejects a bad write.",
+      ground: {
+        title: "The map is reconstructed",
+        body: "Alice, the repository, and who owns it live in docs, prompts, and application code.",
       },
-      store: {
-        title: "TypeDB sits here: one place for the map",
-        body: "The same facts become types the database holds. Agents and people query resource-ownership instead of inventing it.",
+      reason: {
+        title: "Inference runs on a lagging map",
+        body: "Someone updates that map after the fact. Multi-step work then reasons over a world that is already stale.",
       },
-      write: {
-        title: "Invalid structure fails before it spreads",
-        body: "A write that does not fit the schema fails here.",
+      persist: {
+        title: "TypeDB holds the write",
+        body: "The same facts become types. A write that does not fit the schema fails here.",
       },
     },
     sharedNote:
       "Alice, the typedb repository, and resource-ownership are the live homepage teaching example. They are not a customer.",
   },
   s2: {
-    h2: "What does the schema enforce?",
+    h2: "What changes when meaning lives in the database",
     lede: "Three consequences of putting domain meaning in TypeDB.",
     props: [
       {
@@ -160,8 +159,8 @@ export const copy = {
     ],
   },
   s4: {
-    sentence: "Your schema is your type system is your semantic layer.",
-    marks: ["schema", "type system", "semantic layer"],
+    sentence: "Structure that is not enforced is only a suggestion.",
+    marks: ["Structure", "enforced", "suggestion"],
   },
   s5: {
     h2: "TypeDB products for engineers",
@@ -241,19 +240,16 @@ export const copy = {
         value: "4,443",
         label: "GitHub stars",
         href: urls.github,
-        // Source: GET https://api.github.com/repos/typedb/typedb 2026-09-07 stargazers_count
       },
       {
         value: "372",
         label: "GitHub forks",
         href: urls.github,
-        // Source: GET https://api.github.com/repos/typedb/typedb 2026-09-07 forks_count
       },
       {
         value: "2016",
         label: "Repository created",
         href: urls.github,
-        // Source: GET https://api.github.com/repos/typedb/typedb created_at 2016-07-11
       },
     ],
   },
