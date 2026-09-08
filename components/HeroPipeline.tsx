@@ -1,4 +1,5 @@
 import { HeroA1Svg } from "./HeroA1Svg";
+import { HeroMobileFocal } from "./HeroMobileFocal";
 import { PipelineFeeds } from "./pipeline/PipelineFeeds";
 import { StudioPane } from "./pipeline/StudioPane";
 import { QuietField } from "./pipeline/TypedGraphField";
@@ -39,6 +40,7 @@ export function HeroPipeline() {
           />
         </div>
       </div>
+      <HeroMobileFocal />
       <figcaption>Docs, prompts, and application code become one typed model. Agents query that model.</figcaption>
     </figure>
   );
