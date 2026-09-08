@@ -42,6 +42,10 @@
   min-height: 380px;
 }
 
+[data-pipe="v2"] .hero-pipe-flow {
+  gap: 88px;
+}
+
 .hero-pipe-feeds {
   position: absolute;
   inset: 0;
@@ -55,9 +59,9 @@
 .hero-feed-line {
   fill: none;
   stroke: #6b6680;
-  stroke-width: 0.22;
-  stroke-dasharray: 1.05 1.35;
-  stroke-linejoin: round;
+  stroke-width: 0.14;
+  stroke-dasharray: 1.4 2.2;
+  stroke-linejoin: miter;
 }
 
 .hero-feed-dot {
@@ -88,6 +92,12 @@
   background:
     linear-gradient(#12101d, #12101d) padding-box,
     linear-gradient(135deg, #01e870 0%, #78a0ff 100%) border-box;
+}
+
+.hero-pipe-col.is-graph.is-reject {
+  background:
+    linear-gradient(#12101d, #12101d) padding-box,
+    linear-gradient(135deg, #e05d5d 0%, #78a0ff 100%) border-box;
 }
 
 .hero-pipe-col.is-ai {
@@ -153,6 +163,16 @@
   border-radius: 50%;
   background: var(--accent);
   box-shadow: 0 0 8px var(--accent);
+}
+
+.hero-pipe-status.is-reject {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 12%, #12101d);
+}
+
+.hero-pipe-status.is-reject::before {
+  background: var(--danger);
+  box-shadow: 0 0 8px var(--danger);
 }
 
 .hero-pipe-brand {
@@ -443,7 +463,95 @@
 
 .s2-hub-stage .typed-node.relation rect {
   stroke: #01e870;
-  filter: drop-shadow(0 0 10px color-mix(in srgb, #01e870 70%, transparent));
+  filter: drop-shadow(0 0 18px #01e870);
+}
+
+.hero-pipe-sources.is-grid {
+  grid-template-columns: 1fr 1fr;
+}
+
+.hero-pipe-sources .is-fail {
+  border-color: color-mix(in srgb, var(--danger) 55%, var(--raised));
+}
+
+.studio-pane-files {
+  display: flex;
+  gap: 10px;
+  padding: 8px 12px 0;
+  font-family: var(--font-family-code);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+  color: var(--mute-2);
+}
+
+.studio-pane-files .is-on {
+  color: var(--accent);
+  box-shadow: inset 0 -1px 0 var(--accent);
+}
+
+.studio-pane-constraints {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--mute);
+  font-family: var(--font-family-code);
+  font-size: 11px;
+}
+
+.studio-pane-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 12px 8px;
+}
+
+.studio-pane-meta span {
+  padding: 2px 6px;
+  border: 1px solid var(--raised);
+  border-radius: 999px;
+  color: var(--mute);
+  font-family: var(--font-family-code);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+}
+
+.meaning-cast {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.meaning-cast .typed-edge.is-fail {
+  stroke: var(--danger);
+  stroke-dasharray: 4 3;
+}
+
+.meaning-cast .typed-edge.is-ok {
+  stroke: #01e870;
+}
+
+.meaning-cast .typed-node.is-fail rect {
+  stroke: var(--danger);
+}
+
+.meaning-cast-x circle {
+  fill: #140c0e;
+  stroke: var(--danger);
+}
+
+.meaning-cast-x text {
+  fill: var(--danger);
+  font-size: 11px;
+  text-anchor: middle;
+}
+
+.meaning-cast-ask {
+  font-family: var(--font-family-code);
+  font-size: 9px;
+  letter-spacing: 0.04em;
 }
 
 .s2-hub-stage .typed-edge {
