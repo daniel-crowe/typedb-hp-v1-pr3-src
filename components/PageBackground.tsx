@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 
 // Live typedb.com `td-floating-dots-background` from main-EVKLRPT7.js.
 const GRID = 50;
@@ -91,8 +91,38 @@ class FloatingDot {
   }
 }
 
+function subscribeSearch(onStoreChange: () => void) {
+  window.addEventListener("popstate", onStoreChange);
+  return () => {
+    window.removeEventListener("popstate", onStoreChange);
+  };
+}
+
+function readSearchFreeze(): boolean {
+  return new URLSearchParams(window.location.search).get("freeze") === "1";
+}
+
+function serverHold(): boolean {
+  return false;
+}
+
+function subscribeReduce(onStoreChange: () => void) {
+  const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+  media.addEventListener("change", onStoreChange);
+  return () => {
+    media.removeEventListener("change", onStoreChange);
+  };
+}
+
+function readReduce(): boolean {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
 export function PageBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const freeze = useSyncExternalStore(subscribeSearch, readSearchFreeze, serverHold);
+  const reduce = useSyncExternalStore(subscribeReduce, readReduce, serverHold);
+  const hold = freeze || reduce;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -113,13 +143,27 @@ export function PageBackground() {
       dots.push(new FloatingDot(canvas, ctx));
     }
 
-    let frame = 0;
-    const tick = () => {
+    const paint = (move: boolean) => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       dots.forEach((dot) => {
-        dot.update();
+        if (move) {
+          dot.update();
+        }
         dot.draw();
       });
+    };
+
+    let frame = 0;
+    if (hold) {
+      paint(false);
+      window.addEventListener("resize", resize);
+      return () => {
+        window.removeEventListener("resize", resize);
+      };
+    }
+
+    const tick = () => {
+      paint(true);
       frame = window.requestAnimationFrame(tick);
     };
     tick();
@@ -129,7 +173,15 @@ export function PageBackground() {
       window.cancelAnimationFrame(frame);
       window.removeEventListener("resize", resize);
     };
-  }, []);
+  }, [hold]);
 
-  return <canvas ref={canvasRef} className="page-background" aria-hidden="true" />;
+  return (
+    <canvas
+      ref={canvasRef}
+      className="page-background"
+      data-ambient="dots"
+      data-hold={hold ? "1" : "0"}
+      aria-hidden="true"
+    />
+  );
 }
