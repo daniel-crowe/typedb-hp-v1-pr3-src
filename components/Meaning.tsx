@@ -81,6 +81,13 @@ export function Meaning() {
         return;
       }
       timer = window.setInterval(() => {
+        if (hold.current) {
+          if (timer !== null) {
+            window.clearInterval(timer);
+            timer = null;
+          }
+          return;
+        }
         setPhase((current) => {
           const index = STEPS.indexOf(current);
           return STEPS[(index + 1) % STEPS.length] ?? "ingest";
@@ -158,6 +165,7 @@ export function Meaning() {
               <MeaningPhasePane phase={phase} />
             </div>
           </div>
+          <figcaption className="meaning-closer">{copy.s2.graphic.lede}</figcaption>
         </figure>
 
         <div className="prop-grid">

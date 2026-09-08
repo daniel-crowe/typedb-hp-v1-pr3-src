@@ -82,12 +82,20 @@ export function StackFit() {
           {tab === "have-graph" ? copy.s1.tabs.haveGraph.job : copy.s1.tabs.noGraph.job}
         </p>
         <ol className={inView ? "stack-rail is-lit" : "stack-rail"} aria-label="Retrieve, Ground, Reason, Persist">
-          {STAGE_KEYS.map((key) => (
-            <li key={key} className="stack-rail-step is-on" data-stack-stage={key}>
-              <span>{copy.s1.stages[key].index}</span>
-              {copy.s1.stages[key].label}
-            </li>
-          ))}
+          {STAGE_KEYS.map((key) => {
+            const stage = copy.s1.stages[key];
+            const detail = tab === "have-graph" ? copy.s1.haveGraph[key] : copy.s1.noGraph[key];
+            return (
+              <li key={key} className="stack-rail-step is-on" data-stack-stage={key}>
+                <span>{stage.index}</span>
+                <div className="stack-rail-copy">
+                  <strong>{stage.label}</strong>
+                  <p className="stack-rail-title">{detail.title}</p>
+                  <p className="stack-rail-body">{detail.body}</p>
+                </div>
+              </li>
+            );
+          })}
         </ol>
         <div
           className={inView ? "stack-board is-lit" : "stack-board"}

@@ -4,7 +4,7 @@ import { OWNERSHIP_CLUSTER, TypedGraphField } from "./pipeline/TypedGraphField";
 
 export function HeroPipeline() {
   return (
-    <figure className="hero-pipeline" data-hero="pipeline" data-pipe="v2">
+    <figure className="hero-pipeline is-slim" data-hero="pipeline" data-pipe="v2" data-hero-slim="1">
       <div className="hero-pipe-flow">
         <PipelineFeeds />
 
@@ -22,7 +22,7 @@ export function HeroPipeline() {
             <span className="hero-pipe-status">Schema enforced</span>
             <span className="hero-pipe-brand">TypeDB</span>
           </div>
-          <TypedGraphField cluster={OWNERSHIP_CLUSTER} seed="a" />
+          <TypedGraphField cluster={OWNERSHIP_CLUSTER} seed="a" density="focal" />
         </div>
 
         <div className="hero-pipe-col is-ai" data-col="ai">

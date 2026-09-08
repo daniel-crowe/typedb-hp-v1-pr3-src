@@ -126,15 +126,46 @@ const FIELD_B = buildField(8092026);
 export function TypedGraphField({
   cluster,
   seed = "a",
+  density = "field",
 }: {
   cluster: TypedCluster;
   seed?: "a" | "b";
+  density?: "field" | "focal";
 }) {
   const field = seed === "b" ? FIELD_B : FIELD_A;
   const glowId = seed === "b" ? "cluster-glow-b" : "cluster-glow-a";
+  const viewBox = density === "focal" ? "328 78 232 228" : "0 0 560 320";
+  const shownField =
+    density === "focal"
+      ? {
+          nodes: field.nodes.filter((node) => node.x >= 328 && node.x <= 560 && node.y >= 78 && node.y <= 306),
+          edges: field.edges.filter(([from, to]) => {
+            const start = field.nodes[from];
+            const end = field.nodes[to];
+            return Boolean(
+              start &&
+                end &&
+                start.x >= 328 &&
+                start.x <= 560 &&
+                start.y >= 78 &&
+                start.y <= 306 &&
+                end.x >= 328 &&
+                end.x <= 560 &&
+                end.y >= 78 &&
+                end.y <= 306,
+            );
+          }),
+        }
+      : field;
 
   return (
-    <svg className="hero-pipe-field" viewBox="0 0 560 320" role="img" aria-label={cluster.label}>
+    <svg
+      className={density === "focal" ? "hero-pipe-field is-focal" : "hero-pipe-field"}
+      viewBox={viewBox}
+      role="img"
+      data-density={density}
+      aria-label={cluster.label}
+    >
       <defs>
         <filter id={glowId} x="-90%" y="-90%" width="280%" height="280%">
           <feGaussianBlur stdDeviation="7.5" result="blur" />
@@ -152,7 +183,7 @@ export function TypedGraphField({
       </defs>
 
       <g className="hero-pipe-field-bg" aria-hidden="true">
-        {field.edges.map(([from, to]) => {
+        {shownField.edges.map(([from, to]) => {
           const start = field.nodes[from];
           const end = field.nodes[to];
           if (!start || !end) {
@@ -160,7 +191,7 @@ export function TypedGraphField({
           }
           return <line key={`${from}-${to}`} x1={start.x} y1={start.y} x2={end.x} y2={end.y} />;
         })}
-        {field.nodes.map((node, index) => (
+        {shownField.nodes.map((node, index) => (
           <circle key={`n-${index}`} cx={node.x} cy={node.y} r={node.r} />
         ))}
       </g>
