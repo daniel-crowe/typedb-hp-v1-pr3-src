@@ -1,6 +1,7 @@
+import { HeroA1Svg } from "./HeroA1Svg";
 import { PipelineFeeds } from "./pipeline/PipelineFeeds";
 import { StudioPane } from "./pipeline/StudioPane";
-import { OWNERSHIP_CLUSTER, TypedGraphField } from "./pipeline/TypedGraphField";
+import { QuietField } from "./pipeline/TypedGraphField";
 
 export function HeroPipeline() {
   return (
@@ -22,17 +23,19 @@ export function HeroPipeline() {
             <span className="hero-pipe-status">Schema enforced</span>
             <span className="hero-pipe-brand">TypeDB</span>
           </div>
-          <TypedGraphField cluster={OWNERSHIP_CLUSTER} seed="a" density="focal" />
+          <div className="s2-hub-stage">
+            <QuietField seed="a" />
+            <HeroA1Svg idPrefix="hero-a1" />
+          </div>
         </div>
 
         <div className="hero-pipe-col is-ai" data-col="ai">
           <StudioPane
             mode="match"
-            query={["match", "  $o isa resource-ownership;"]}
-            rows={[
-              { role: "owner", value: "Alice" },
-              { role: "resource", value: "typedb" },
-            ]}
+            chrome="studio"
+            query={["match $d isa directorship,", "      links (director: $p, _);"]}
+            rows={[{ role: "director", value: "Alice Park" }]}
+            foot="typed path held"
           />
         </div>
       </div>

@@ -13,7 +13,7 @@ type BoxProps = {
 
 function NodeBox({ id, kind, type, name, x, y, w, h }: BoxProps) {
   return (
-    <g className={`typed-node ${kind}`} id={`a1-${id}`} transform={`translate(${x} ${y})`}>
+    <g className={`typed-node ${kind}`} id={id} transform={`translate(${x} ${y})`}>
       <rect width={w} height={h} rx="6" />
       <text className="typed-kind" x="12" y="18">
         {kind}
@@ -28,16 +28,19 @@ function NodeBox({ id, kind, type, name, x, y, w, h }: BoxProps) {
   );
 }
 
-export function HeroA1Svg() {
+export function HeroA1Svg({ idPrefix = "a1" }: { idPrefix?: string }) {
+  const titleId = `${idPrefix}-title`;
+  const descId = `${idPrefix}-desc`;
+
   return (
     <svg
       className="hero-a1-svg"
       viewBox={`0 0 ${A1_VIEW.w} ${A1_VIEW.h}`}
       role="img"
-      aria-labelledby="a1-title a1-desc"
+      aria-labelledby={`${titleId} ${descId}`}
     >
-      <title id="a1-title">A1 compact hierarchy: people, directorship hubs, companies</title>
-      <desc id="a1-desc">
+      <title id={titleId}>People play director. Companies play directed. Ownership carries stake.</title>
+      <desc id={descId}>
         Alice Park and Bob Rivera play director on directorship relations. Acme Corp, Globex Inc, and
         Initech Ltd play directed. Ownership between companies carries stake-percentage 51 and 30.
       </desc>
@@ -67,16 +70,16 @@ export function HeroA1Svg() {
         </g>
       ))}
       {people.map((node) => (
-        <NodeBox key={node.id} {...node} />
+        <NodeBox key={node.id} {...node} id={`${idPrefix}-${node.id}`} />
       ))}
       {hubs.map((node) => (
-        <NodeBox key={node.id} {...node} />
+        <NodeBox key={node.id} {...node} id={`${idPrefix}-${node.id}`} />
       ))}
       {companies.map((node) => (
-        <NodeBox key={node.id} {...node} />
+        <NodeBox key={node.id} {...node} id={`${idPrefix}-${node.id}`} />
       ))}
       {chips.map((chip) => (
-        <g className="hero-a1-chip" id={`a1-${chip.id}`} key={chip.id} transform={`translate(${chip.x} ${chip.y})`}>
+        <g className="hero-a1-chip" id={`${idPrefix}-${chip.id}`} key={chip.id} transform={`translate(${chip.x} ${chip.y})`}>
           <rect width="52" height="28" rx="4" />
           <text className="hero-a1-chip-kind" x="8" y="11">
             {chip.label}
