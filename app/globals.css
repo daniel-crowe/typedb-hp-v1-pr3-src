@@ -255,6 +255,54 @@ main,
   font-size: 13px;
 }
 
+.hero-mobile-focal {
+  display: none;
+  --relation: #01e870;
+}
+
+.hero-mobile-focal-stage {
+  position: relative;
+  min-height: 300px;
+}
+
+.hero-mobile-focal-stage .hero-pipe-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  opacity: 0.7;
+}
+
+.hero-mobile-focal-svg {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.hero-mobile-focal .hero-pipe-graph-bar {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 12px 14px 0;
+}
+
+.hero-mobile-focal .typed-node.entity rect {
+  stroke: var(--entity);
+}
+
+.hero-mobile-focal .typed-node.relation.is-focal rect {
+  stroke: #01e870;
+  stroke-width: 2.25;
+  filter: drop-shadow(0 0 12px color-mix(in srgb, #01e870 68%, transparent));
+}
+
+.hero-mobile-focal .typed-edge-dot {
+  fill: #f3f3f3;
+}
+
 .hero-pipe-flow {
   position: relative;
   display: grid;
@@ -2130,6 +2178,34 @@ main,
     padding: 24px 0 48px;
   }
 
+  .hero[data-hero-mobile="v1"] .hero-copy {
+    max-width: none;
+  }
+
+  .hero[data-hero-mobile="v1"] .hero-actions {
+    justify-content: flex-start;
+  }
+
+  .hero[data-hero-mobile="v1"] .hero-pipe-flow,
+  .hero[data-hero-mobile="v1"] .hero-pipeline figcaption {
+    display: none;
+  }
+
+  .hero[data-hero-mobile="v1"] .hero-pipeline {
+    background: transparent;
+    border: 0;
+  }
+
+  .hero[data-hero-mobile="v1"] .hero-mobile-focal {
+    display: block;
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, #01e870 22%, var(--raised));
+    border-radius: 14px;
+    background: #12101d;
+    box-shadow: inset 0 0 0 1px rgba(1, 232, 112, 0.06);
+  }
+
   .hero-pipe-flow {
     grid-template-columns: 1fr;
     gap: 12px;
@@ -2528,7 +2604,7 @@ html[data-freeze="1"] .hero-pipe-status::before {
 @media (max-width: 768px) {
   .hero[data-hero-mobile="v1"] .typed-node[data-focal="0"],
   .hero[data-hero-mobile="v1"] .hero-a1-svg [data-focal="0"],
-  .hero[data-hero-mobile="v1"] .hero-a1-chip,
+  .hero[data-hero-mobile="v1"] .hero-a1-svg .hero-a1-chip,
   .hero[data-hero-mobile="v1"] .hero-a1-col-label {
     display: none;
   }
