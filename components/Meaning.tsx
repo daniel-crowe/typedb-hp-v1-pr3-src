@@ -2,16 +2,50 @@
 
 import { Fragment, useEffect, useRef, useState } from "react";
 import { copy } from "@/lib/copy";
+import { MeaningCast } from "./MeaningCast";
 import { PipelineFeeds } from "./pipeline/PipelineFeeds";
 import { StudioPane } from "./pipeline/StudioPane";
-import { EMPLOYMENT_CLUSTER, TypedGraphField } from "./pipeline/TypedGraphField";
-import { MeaningGraphic, type MeaningPhase } from "./MeaningGraphic";
+import { QuietField } from "./pipeline/TypedGraphField";
+import type { MeaningPhase } from "./MeaningGraphic";
 
 const STEPS = ["ingest", "update", "enforce"] as const;
 const TICK_MS = 3000;
 
 function reducedMotionOn(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function MeaningIngress({ phase }: { phase: MeaningPhase }) {
+  switch (phase) {
+    case "ingest":
+      return (
+        <ul className="hero-pipe-sources">
+          <li>person</li>
+          <li>company</li>
+          <li>clearance</li>
+        </ul>
+      );
+    case "update":
+      return (
+        <ul className="hero-pipe-sources">
+          <li>person</li>
+          <li>employee</li>
+          <li>company</li>
+        </ul>
+      );
+    case "enforce":
+      return (
+        <ul className="hero-pipe-sources">
+          <li className="is-fail">person → owner</li>
+          <li>clearance</li>
+          <li>resource</li>
+        </ul>
+      );
+    default: {
+      const exhausted: never = phase;
+      return exhausted;
+    }
+  }
 }
 
 function MeaningPhasePane({ phase }: { phase: MeaningPhase }) {
@@ -21,13 +55,13 @@ function MeaningPhasePane({ phase }: { phase: MeaningPhase }) {
         <div className="meaning-phase-pane" data-phase="ingest">
           <p className="hero-pipe-result-label">Instances</p>
           <p>
-            <span className="role-tag">person</span> Sam
+            <span className="role-tag">person</span> Dana
           </p>
           <p>
-            <span className="role-tag">company</span> Acme
+            <span className="role-tag">company</span> Helix AG
           </p>
           <p>
-            <span className="role-tag">project</span> billing
+            <span className="role-tag">relation</span> clearance
           </p>
         </div>
       );
@@ -41,15 +75,29 @@ function MeaningPhasePane({ phase }: { phase: MeaningPhase }) {
           <p>
             <span className="role-tag">subtype</span> employee
           </p>
-          <p className="meaning-phase-note">Sam still matches as person.</p>
+          <p className="meaning-phase-note">Dana still matches as person.</p>
         </div>
       );
     case "enforce":
       return (
         <StudioPane
           mode="write-reject"
-          query={["insert", "  $e isa employment;"]}
-          reject="Type person cannot play employment:employer"
+          chrome="studio"
+          files={[
+            { label: "write.tql", on: true },
+            { label: "schema.tql" },
+            { label: "log" },
+          ]}
+          query={[
+            "insert",
+            "  $o isa ownership;",
+            '  $p isa person, has name "Dana";',
+            "  $o links (owner: $p);",
+          ]}
+          violation="Schema violation"
+          reject="person cannot play ownership:owner"
+          constraints={["company plays ownership:owner;", "person plays clearance:grantee;"]}
+          foot="meaning held · invalid structure blocked"
         />
       );
     default: {
@@ -152,14 +200,20 @@ export function Meaning() {
           <div className="hero-pipe-flow">
             <PipelineFeeds />
             <div className="hero-pipe-col" data-col="sources">
-              <p className="hero-pipe-label">Type system</p>
-              <MeaningGraphic phase={phase} compact />
+              <p className="hero-pipe-label">{phase === "enforce" ? "Attempted write" : "Type system"}</p>
+              <MeaningIngress phase={phase} />
             </div>
-            <div className="hero-pipe-col is-graph" data-col="graph">
+            <div className={phase === "enforce" ? "hero-pipe-col is-graph is-reject" : "hero-pipe-col is-graph"} data-col="graph">
               <div className="hero-pipe-graph-bar">
+                <span className={phase === "enforce" ? "hero-pipe-status is-reject" : "hero-pipe-status"}>
+                  {phase === "enforce" ? "Write rejected" : "Schema enforced"}
+                </span>
                 <span className="hero-pipe-brand">TypeDB</span>
               </div>
-              <TypedGraphField cluster={EMPLOYMENT_CLUSTER} seed="b" />
+              <div className="s2-hub-stage">
+                <QuietField seed="b" />
+                <MeaningCast phase={phase} />
+              </div>
             </div>
             <div className="hero-pipe-col is-ai" data-col="ai">
               <MeaningPhasePane phase={phase} />

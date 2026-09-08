@@ -43,20 +43,20 @@ function buildField(seed: number): { nodes: FieldNode[]; edges: FieldEdge[] } {
   const rand = mulberry32(seed);
   const nodes: FieldNode[] = [];
 
-  for (let row = 0; row < 8; row += 1) {
-    for (let col = 0; col < 11; col += 1) {
-      if (rand() < 0.08) {
+  for (let row = 0; row < 11; row += 1) {
+    for (let col = 0; col < 15; col += 1) {
+      if (rand() < 0.04) {
         continue;
       }
       nodes.push({
-        x: 18 + col * 48 + (rand() - 0.5) * 20,
-        y: 16 + row * 36 + (rand() - 0.5) * 14,
-        r: 1.2 + rand() * 1.1,
+        x: 10 + col * 36 + (rand() - 0.5) * 14,
+        y: 10 + row * 28 + (rand() - 0.5) * 10,
+        r: 1.05 + rand() * 0.9,
       });
     }
   }
 
-  for (let i = 0; i < 22; i += 1) {
+  for (let i = 0; i < 36; i += 1) {
     nodes.push({
       x: 16 + rand() * 528,
       y: 12 + rand() * 296,
