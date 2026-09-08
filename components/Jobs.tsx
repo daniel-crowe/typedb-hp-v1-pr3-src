@@ -10,11 +10,11 @@ export function Jobs() {
         <div className="job-grid">
           {copy.s3.items.map((item) => (
             <article key={item.id} className="job-card" data-job={item.id}>
-              <p className="kind">{item.industry}</p>
-              <h3>{item.title}</h3>
               <div className="job-visual">
                 <JobGraphic id={item.id} />
               </div>
+              <p className="kind">{item.industry}</p>
+              <h3>{item.title}</h3>
               <p>{item.job}</p>
               <p>{item.with}</p>
               <a href={item.href} rel="noreferrer">
