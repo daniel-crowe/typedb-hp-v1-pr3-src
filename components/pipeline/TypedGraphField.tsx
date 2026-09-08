@@ -123,6 +123,28 @@ export const EMPLOYMENT_CLUSTER: TypedCluster = {
 const FIELD_A = buildField(20260908);
 const FIELD_B = buildField(8092026);
 
+export function QuietField({ seed = "a" }: { seed?: "a" | "b" }) {
+  const field = seed === "b" ? FIELD_B : FIELD_A;
+
+  return (
+    <svg className="hero-pipe-field s2-quiet-field" viewBox="0 0 560 320" aria-hidden="true">
+      <g className="hero-pipe-field-bg">
+        {field.edges.map(([from, to]) => {
+          const start = field.nodes[from];
+          const end = field.nodes[to];
+          if (!start || !end) {
+            return null;
+          }
+          return <line key={`${from}-${to}`} x1={start.x} y1={start.y} x2={end.x} y2={end.y} />;
+        })}
+        {field.nodes.map((node, index) => (
+          <circle key={`n-${index}`} cx={node.x} cy={node.y} r={node.r} />
+        ))}
+      </g>
+    </svg>
+  );
+}
+
 export function TypedGraphField({
   cluster,
   seed = "a",

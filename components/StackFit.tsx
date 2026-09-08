@@ -2,9 +2,10 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { copy } from "@/lib/copy";
+import { HeroA1Svg } from "./HeroA1Svg";
 import { PipelineFeeds } from "./pipeline/PipelineFeeds";
 import { StudioPane } from "./pipeline/StudioPane";
-import { OWNERSHIP_CLUSTER, TypedGraphField } from "./pipeline/TypedGraphField";
+import { QuietField } from "./pipeline/TypedGraphField";
 
 type TabId = "have-graph" | "no-graph";
 type StageKey = "retrieve" | "ground" | "reason" | "persist";
@@ -104,11 +105,11 @@ export function StackFit() {
           aria-labelledby={tab === "have-graph" ? "tab-have-graph" : "tab-no-graph"}
           data-tab={tab}
         >
-          <figure className="s2-pipeline" data-pipe="v2">
+          <figure className="s2-pipeline" data-pipe="v1" data-s2="pipeline-v1">
             <div className="hero-pipe-flow">
               <PipelineFeeds />
               <div className="hero-pipe-col" data-col="sources">
-                <p className="hero-pipe-label">Sources</p>
+                <p className="hero-pipe-label">Sources & workloads</p>
                 <ul className="hero-pipe-sources">
                   {SOURCES[tab].map((chip) => (
                     <li key={chip}>{chip}</li>
@@ -120,13 +121,24 @@ export function StackFit() {
                   <span className="hero-pipe-status">Schema enforced</span>
                   <span className="hero-pipe-brand">TypeDB</span>
                 </div>
-                <TypedGraphField cluster={OWNERSHIP_CLUSTER} seed="a" />
+                <div className="s2-hub-stage">
+                  <QuietField seed="a" />
+                  <HeroA1Svg />
+                </div>
               </div>
               <div className="hero-pipe-col is-ai" data-col="ai">
                 <StudioPane
                   mode="write-reject"
-                  query={["insert", "  $o isa resource-ownership;"]}
-                  reject="A write that does not play owner or resource fails here."
+                  chrome="studio"
+                  query={["insert", "  $p isa person;", "  $o (owner: $p) isa ownership;"]}
+                  violation="Schema violation"
+                  reject="person cannot play ownership:owner"
+                  note={
+                    tab === "have-graph"
+                      ? copy.s1.haveGraph.persist.body
+                      : copy.s1.noGraph.persist.body
+                  }
+                  foot="meaning held · no invalid structure"
                 />
               </div>
             </div>
