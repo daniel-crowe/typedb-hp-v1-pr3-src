@@ -9,11 +9,12 @@ type BoxProps = {
   y: number;
   w: number;
   h: number;
+  focal?: boolean;
 };
 
-function NodeBox({ id, kind, type, name, x, y, w, h }: BoxProps) {
+function NodeBox({ id, kind, type, name, x, y, w, h, focal = false }: BoxProps) {
   return (
-    <g className={`typed-node ${kind}`} id={id} transform={`translate(${x} ${y})`}>
+    <g className={`typed-node ${kind}`} id={id} data-focal={focal ? "1" : "0"} transform={`translate(${x} ${y})`}>
       <rect width={w} height={h} rx="6" />
       <text className="typed-kind" x="12" y="18">
         {kind}
@@ -60,7 +61,7 @@ export function HeroA1Svg({ idPrefix = "a1" }: { idPrefix?: string }) {
         </text>
       </g>
       {edges.map((edge) => (
-        <g key={edge.id}>
+        <g key={edge.id} data-focal={edge.id === "alice-d1" || edge.id === "d1-acme" ? "1" : "0"}>
           <path className="typed-edge hero-a1-edge" d={polyline(edge.points)} fill="none" />
           {edge.role && edge.roleAt ? (
             <text className="typed-role" x={edge.roleAt[0]} y={edge.roleAt[1]}>
@@ -70,13 +71,13 @@ export function HeroA1Svg({ idPrefix = "a1" }: { idPrefix?: string }) {
         </g>
       ))}
       {people.map((node) => (
-        <NodeBox key={node.id} {...node} id={`${idPrefix}-${node.id}`} />
+        <NodeBox key={node.id} {...node} id={`${idPrefix}-${node.id}`} focal={node.id === "alice"} />
       ))}
       {hubs.map((node) => (
-        <NodeBox key={node.id} {...node} id={`${idPrefix}-${node.id}`} />
+        <NodeBox key={node.id} {...node} id={`${idPrefix}-${node.id}`} focal={node.id === "d1"} />
       ))}
       {companies.map((node) => (
-        <NodeBox key={node.id} {...node} id={`${idPrefix}-${node.id}`} />
+        <NodeBox key={node.id} {...node} id={`${idPrefix}-${node.id}`} focal={node.id === "acme"} />
       ))}
       {chips.map((chip) => (
         <g className="hero-a1-chip" id={`${idPrefix}-${chip.id}`} key={chip.id} transform={`translate(${chip.x} ${chip.y})`}>
