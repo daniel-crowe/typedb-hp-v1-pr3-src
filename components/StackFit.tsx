@@ -2,98 +2,19 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { copy } from "@/lib/copy";
-import { ProcessGraph } from "./ProcessGraph";
-import { TypedFactGraph } from "./TypedFactGraph";
+import { PipelineFeeds } from "./pipeline/PipelineFeeds";
+import { StudioPane } from "./pipeline/StudioPane";
+import { OWNERSHIP_CLUSTER, TypedGraphField } from "./pipeline/TypedGraphField";
 
 type TabId = "have-graph" | "no-graph";
 type StageKey = "retrieve" | "ground" | "reason" | "persist";
 
 const STAGE_KEYS: StageKey[] = ["retrieve", "ground", "reason", "persist"];
 
-function StageCopy({ tab, stage }: { tab: TabId; stage: StageKey }) {
-  const pack = tab === "have-graph" ? copy.s1.haveGraph : copy.s1.noGraph;
-  const item = pack[stage];
-  return (
-    <>
-      <h3>{item.title}</h3>
-      <p>{item.body}</p>
-    </>
-  );
-}
-
-function RetrieveVisual() {
-  return <p className="stack-question">Who owns the typedb repository?</p>;
-}
-
-function GroundVisual({ tab }: { tab: TabId }) {
-  if (tab === "have-graph") {
-    return (
-      <ProcessGraph
-        label="A property graph answers with a binary edge walk"
-        nodes={[
-          { kind: "step", name: "Alice" },
-          { kind: "step", name: "typedb" },
-        ]}
-        edges={["OWNS"]}
-      />
-    );
-  }
-  return (
-    <ul className="note-list">
-      <li>Alice can use typedb</li>
-      <li>owner is in the prompt</li>
-      <li>users.json holds the email</li>
-    </ul>
-  );
-}
-
-function ReasonVisual({ tab }: { tab: TabId }) {
-  if (tab === "have-graph") {
-    return (
-      <ProcessGraph
-        label="An untyped walk can still look well-formed"
-        nodes={[
-          { kind: "step", name: "Alice" },
-          { kind: "step", name: "org" },
-          { kind: "step", name: "typedb" },
-        ]}
-        edges={["MEMBER", "OWNS"]}
-      />
-    );
-  }
-  return (
-    <pre className="typeql-chip">
-      <span className="kw">prompt</span>
-      {"\nowner is whoever the last note named"}
-    </pre>
-  );
-}
-
-function PersistVisual() {
-  return (
-    <>
-      <TypedFactGraph id="stack-persist" compact />
-      <p className="fail-line">A write that does not play owner or resource fails here.</p>
-    </>
-  );
-}
-
-function StageVisual({ tab, stage }: { tab: TabId; stage: StageKey }) {
-  switch (stage) {
-    case "retrieve":
-      return <RetrieveVisual />;
-    case "ground":
-      return <GroundVisual tab={tab} />;
-    case "reason":
-      return <ReasonVisual tab={tab} />;
-    case "persist":
-      return <PersistVisual />;
-    default: {
-      const exhausted: never = stage;
-      return exhausted;
-    }
-  }
-}
+const SOURCES: Record<TabId, string[]> = {
+  "have-graph": ["Stored edges", "Application code", "Role conventions"],
+  "no-graph": ["Docs", "Prompts", "Application code"],
+};
 
 export function StackFit() {
   const root = useRef<HTMLElement>(null);
@@ -160,6 +81,14 @@ export function StackFit() {
         <p className="stack-job" data-tab={tab}>
           {tab === "have-graph" ? copy.s1.tabs.haveGraph.job : copy.s1.tabs.noGraph.job}
         </p>
+        <ol className={inView ? "stack-rail is-lit" : "stack-rail"} aria-label="Retrieve, Ground, Reason, Persist">
+          {STAGE_KEYS.map((key) => (
+            <li key={key} className="stack-rail-step is-on" data-stack-stage={key}>
+              <span>{copy.s1.stages[key].index}</span>
+              {copy.s1.stages[key].label}
+            </li>
+          ))}
+        </ol>
         <div
           className={inView ? "stack-board is-lit" : "stack-board"}
           role="tabpanel"
@@ -167,24 +96,33 @@ export function StackFit() {
           aria-labelledby={tab === "have-graph" ? "tab-have-graph" : "tab-no-graph"}
           data-tab={tab}
         >
-          {STAGE_KEYS.map((key) => (
-            <article
-              key={`${tab}-${key}`}
-              className="stack-stage is-on"
-              data-stack-stage={key}
-            >
-              <p className="stack-stage-index">
-                <span>{copy.s1.stages[key].index}</span>
-                {copy.s1.stages[key].label}
-              </p>
-              <div className="stack-stage-copy">
-                <StageCopy tab={tab} stage={key} />
+          <figure className="s2-pipeline" data-pipe="v2">
+            <div className="hero-pipe-flow">
+              <PipelineFeeds />
+              <div className="hero-pipe-col" data-col="sources">
+                <p className="hero-pipe-label">Sources</p>
+                <ul className="hero-pipe-sources">
+                  {SOURCES[tab].map((chip) => (
+                    <li key={chip}>{chip}</li>
+                  ))}
+                </ul>
               </div>
-              <div className="stack-stage-visual">
-                <StageVisual tab={tab} stage={key} />
+              <div className="hero-pipe-col is-graph" data-col="graph">
+                <div className="hero-pipe-graph-bar">
+                  <span className="hero-pipe-status">Schema enforced</span>
+                  <span className="hero-pipe-brand">TypeDB</span>
+                </div>
+                <TypedGraphField cluster={OWNERSHIP_CLUSTER} seed="a" />
               </div>
-            </article>
-          ))}
+              <div className="hero-pipe-col is-ai" data-col="ai">
+                <StudioPane
+                  mode="write-reject"
+                  query={["insert", "  $o isa resource-ownership;"]}
+                  reject="A write that does not play owner or resource fails here."
+                />
+              </div>
+            </div>
+          </figure>
         </div>
       </div>
     </section>
