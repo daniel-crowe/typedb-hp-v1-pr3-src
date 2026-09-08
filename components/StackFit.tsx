@@ -1,24 +1,14 @@
 "use client";
 
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { copy } from "@/lib/copy";
-import { phaseFromProgress, seekScrub } from "@/lib/scrub-seek";
 import { ProcessGraph } from "./ProcessGraph";
 import { TypedFactGraph } from "./TypedFactGraph";
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
-
 type TabId = "have-graph" | "no-graph";
-type StageKey = "ask" | "look" | "store" | "write";
+type StageKey = "retrieve" | "ground" | "reason" | "persist";
 
-const STAGE_KEYS: StageKey[] = ["ask", "look", "store", "write"];
-
-function reducedMotionOn(): boolean {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
+const STAGE_KEYS: StageKey[] = ["retrieve", "ground", "reason", "persist"];
 
 function StageCopy({ tab, stage }: { tab: TabId; stage: StageKey }) {
   const pack = tab === "have-graph" ? copy.s1.haveGraph : copy.s1.noGraph;
@@ -31,7 +21,11 @@ function StageCopy({ tab, stage }: { tab: TabId; stage: StageKey }) {
   );
 }
 
-function LookVisual({ tab }: { tab: TabId }) {
+function RetrieveVisual() {
+  return <p className="stack-question">Who owns the typedb repository?</p>;
+}
+
+function GroundVisual({ tab }: { tab: TabId }) {
   if (tab === "have-graph") {
     return (
       <ProcessGraph
@@ -53,32 +47,47 @@ function LookVisual({ tab }: { tab: TabId }) {
   );
 }
 
-function StoreVisual() {
-  return <TypedFactGraph id="stack-store" compact />;
-}
-
-function WriteVisual() {
+function ReasonVisual({ tab }: { tab: TabId }) {
+  if (tab === "have-graph") {
+    return (
+      <ProcessGraph
+        label="An untyped walk can still look well-formed"
+        nodes={[
+          { kind: "step", name: "Alice" },
+          { kind: "step", name: "org" },
+          { kind: "step", name: "typedb" },
+        ]}
+        edges={["MEMBER", "OWNS"]}
+      />
+    );
+  }
   return (
     <pre className="typeql-chip">
-      <span className="kw">insert</span>
-      {"\n  $x isa "}
-      <span className="rel">resource-ownership</span>
-      {";\n"}
-      <span className="fail-line">A write that does not play owner or resource fails here.</span>
+      <span className="kw">prompt</span>
+      {"\nowner is whoever the last note named"}
     </pre>
+  );
+}
+
+function PersistVisual() {
+  return (
+    <>
+      <TypedFactGraph id="stack-persist" compact />
+      <p className="fail-line">A write that does not play owner or resource fails here.</p>
+    </>
   );
 }
 
 function StageVisual({ tab, stage }: { tab: TabId; stage: StageKey }) {
   switch (stage) {
-    case "ask":
-      return null;
-    case "look":
-      return <LookVisual tab={tab} />;
-    case "store":
-      return <StoreVisual />;
-    case "write":
-      return <WriteVisual />;
+    case "retrieve":
+      return <RetrieveVisual />;
+    case "ground":
+      return <GroundVisual tab={tab} />;
+    case "reason":
+      return <ReasonVisual tab={tab} />;
+    case "persist":
+      return <PersistVisual />;
     default: {
       const exhausted: never = stage;
       return exhausted;
@@ -88,85 +97,31 @@ function StageVisual({ tab, stage }: { tab: TabId; stage: StageKey }) {
 
 export function StackFit() {
   const root = useRef<HTMLElement>(null);
-  const trigger = useRef<ScrollTrigger | null>(null);
-  const applyRef = useRef<(index: number) => void>(() => {});
   const [tab, setTab] = useState<TabId>("have-graph");
+  const [inView, setInView] = useState(false);
   const tabListId = useId();
 
-  useGSAP(
-    () => {
-      const section = root.current;
-      if (!section) {
-        return;
-      }
-
-      const stages = section.querySelectorAll<HTMLElement>("[data-stack-stage]");
-      const spine = section.querySelector<HTMLElement>(".stack-spine-fill");
-
-      let last = -1;
-      const apply = (index: number) => {
-        if (index === last) {
-          return;
+  useEffect(() => {
+    const section = root.current;
+    if (!section) {
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setInView(true);
         }
-        last = index;
-        stages.forEach((node, i) => {
-          const on = i <= index;
-          node.classList.toggle("is-on", on);
-          gsap.to(node, {
-            autoAlpha: on ? 1 : 0.28,
-            y: on ? 0 : 18,
-            duration: 0.2,
-            overwrite: "auto",
-          });
-        });
-        if (spine) {
-          gsap.to(spine, {
-            scaleY: (index + 1) / STAGE_KEYS.length,
-            duration: 0.2,
-            overwrite: "auto",
-          });
-        }
-      };
-      applyRef.current = apply;
-
-      if (reducedMotionOn()) {
-        section.classList.add("is-poster");
-        stages.forEach((node) => {
-          node.classList.add("is-on");
-        });
-        if (spine) {
-          spine.style.transform = "scaleY(1)";
-        }
-        return;
-      }
-
-      gsap.set(stages, { autoAlpha: 0.28, y: 18 });
-      if (spine) {
-        gsap.set(spine, { scaleY: 0, transformOrigin: "top center" });
-      }
-
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: section.querySelector(".stack-board"),
-          start: "top 78%",
-          end: "bottom 32%",
-          scrub: 0.7,
-          onUpdate: (self) => {
-            apply(phaseFromProgress(self.progress, STAGE_KEYS.length));
-          },
-        },
-      });
-      timeline.to({}, { duration: 1 });
-      trigger.current = timeline.scrollTrigger ?? null;
-    },
-    { scope: root, dependencies: [tab] },
-  );
+      },
+      { threshold: 0.2 },
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <section className="section" ref={root} id="in-practice">
       <div className="wrap">
         <h2 className="section-title">{copy.s1.h2}</h2>
-
         <div
           className="tablist"
           role="tablist"
@@ -202,44 +157,21 @@ export function StackFit() {
             {copy.s1.tabs.noGraph.label}
           </button>
         </div>
-
+        <p className="stack-job" data-tab={tab}>
+          {tab === "have-graph" ? copy.s1.tabs.haveGraph.job : copy.s1.tabs.noGraph.job}
+        </p>
         <div
-          className="stack-board"
+          className={inView ? "stack-board is-lit" : "stack-board"}
           role="tabpanel"
           id={tab === "have-graph" ? "panel-have-graph" : "panel-no-graph"}
           aria-labelledby={tab === "have-graph" ? "tab-have-graph" : "tab-no-graph"}
           data-tab={tab}
         >
-          <div className="stack-spine" aria-hidden="true">
-            <span className="stack-spine-fill" />
-          </div>
-          {STAGE_KEYS.map((key, index) => (
+          {STAGE_KEYS.map((key) => (
             <article
               key={`${tab}-${key}`}
-              className="stack-stage"
+              className="stack-stage is-on"
               data-stack-stage={key}
-              tabIndex={0}
-              role="button"
-              aria-label={`${copy.s1.stages[key].label}: ${
-                tab === "have-graph" ? copy.s1.haveGraph[key].title : copy.s1.noGraph[key].title
-              }`}
-              onClick={() => {
-                if (trigger.current) {
-                  seekScrub(trigger.current, index, STAGE_KEYS.length);
-                  return;
-                }
-                applyRef.current(index);
-              }}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  event.preventDefault();
-                  if (trigger.current) {
-                    seekScrub(trigger.current, index, STAGE_KEYS.length);
-                    return;
-                  }
-                  applyRef.current(index);
-                }
-              }}
             >
               <p className="stack-stage-index">
                 <span>{copy.s1.stages[key].index}</span>

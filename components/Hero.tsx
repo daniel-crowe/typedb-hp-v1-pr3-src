@@ -1,5 +1,5 @@
 import { copy } from "@/lib/copy";
-import { HeroA1 } from "./HeroA1";
+import { HeroPipeline } from "./HeroPipeline";
 
 export function Hero() {
   return (
@@ -16,7 +16,7 @@ export function Hero() {
           </a>
         </div>
       </div>
-      <HeroA1 />
+      <HeroPipeline />
     </section>
   );
 }

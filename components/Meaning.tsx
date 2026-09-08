@@ -1,16 +1,11 @@
 "use client";
 
-import { Fragment, useRef, useState } from "react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { copy } from "@/lib/copy";
-import { phaseFromProgress, seekScrub } from "@/lib/scrub-seek";
 import { MeaningGraphic, type MeaningPhase } from "./MeaningGraphic";
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
-
 const STEPS = ["ingest", "update", "enforce"] as const;
+const TICK_MS = 3000;
 
 function reducedMotionOn(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -18,78 +13,55 @@ function reducedMotionOn(): boolean {
 
 export function Meaning() {
   const root = useRef<HTMLElement>(null);
-  const trigger = useRef<ScrollTrigger | null>(null);
   const [phase, setPhase] = useState<MeaningPhase>("ingest");
+  const hold = useRef(false);
 
-  useGSAP(
-    () => {
-      const section = root.current;
-      if (!section) {
+  useEffect(() => {
+    const section = root.current;
+    if (!section) {
+      return;
+    }
+
+    if (reducedMotionOn()) {
+      section.querySelector(".lifecycle-band")?.classList.add("is-poster");
+      return;
+    }
+
+    let timer: number | null = null;
+    const start = () => {
+      if (timer !== null || hold.current) {
         return;
       }
-
-      const band = section.querySelector<HTMLElement>(".lifecycle-band");
-      const steps = section.querySelectorAll<HTMLElement>("[data-lifecycle-step]");
-      const fill = section.querySelector<HTMLElement>(".lifecycle-fill");
-
-      if (!band) {
-        return;
-      }
-
-      let last = -1;
-      const applyPhase = (index: number) => {
-        if (index === last) {
-          return;
-        }
-        last = index;
-        const key = STEPS[index] ?? "ingest";
-        setPhase((current) => (current === key ? current : key));
-        steps.forEach((node, i) => {
-          const on = i <= index;
-          node.classList.toggle("is-on", on);
-          gsap.to(node, { autoAlpha: on ? 1 : 0.4, duration: 0.2, overwrite: "auto" });
+      timer = window.setInterval(() => {
+        setPhase((current) => {
+          const index = STEPS.indexOf(current);
+          return STEPS[(index + 1) % STEPS.length] ?? "ingest";
         });
-        if (fill) {
-          gsap.to(fill, {
-            scaleX: (index + 1) / STEPS.length,
-            duration: 0.2,
-            overwrite: "auto",
-          });
-        }
-      };
-
-      if (reducedMotionOn()) {
-        band.classList.add("is-poster");
-        if (fill) {
-          fill.style.transform = "scaleX(1)";
-        }
-        steps.forEach((node) => {
-          node.classList.add("is-on");
-        });
-        return;
+      }, TICK_MS);
+    };
+    const stop = () => {
+      if (timer !== null) {
+        window.clearInterval(timer);
+        timer = null;
       }
+    };
 
-      gsap.set(steps, { autoAlpha: 0.4 });
-      if (fill) {
-        gsap.set(fill, { scaleX: 0, transformOrigin: "left center" });
-      }
-
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: band,
-          start: "top 78%",
-          end: "bottom 32%",
-          scrub: 0.7,
-          onUpdate: (self) => {
-            applyPhase(phaseFromProgress(self.progress, STEPS.length));
-          },
-        },
-      });
-      timeline.to({}, { duration: 1 });
-      trigger.current = timeline.scrollTrigger ?? null;
-    },
-    { scope: root },
-  );
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          start();
+        } else {
+          stop();
+        }
+      },
+      { threshold: 0.32 },
+    );
+    observer.observe(section);
+    return () => {
+      observer.disconnect();
+      stop();
+    };
+  }, []);
 
   return (
     <section className="section section-proof" ref={root} id="meaning">
@@ -99,9 +71,6 @@ export function Meaning() {
         <figure className="domain-graphic">
           <div className="domain-map">
             <div className="lifecycle-band" aria-label="Ingest, update, enforce">
-              <span className="lifecycle-progress" aria-hidden="true">
-                <span className="lifecycle-fill" />
-              </span>
               {STEPS.map((key, index) => (
                 <Fragment key={key}>
                   {index > 0 ? (
@@ -111,12 +80,12 @@ export function Meaning() {
                   ) : null}
                   <button
                     type="button"
-                    className="lifecycle-step"
+                    className={phase === key ? "lifecycle-step is-on" : "lifecycle-step"}
                     data-lifecycle-step={key}
                     aria-pressed={phase === key}
                     onClick={() => {
+                      hold.current = true;
                       setPhase(key);
-                      seekScrub(trigger.current, index, STEPS.length);
                     }}
                   >
                     <p className="lifecycle-label">{copy.s2.graphic[key].label}</p>
