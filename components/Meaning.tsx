@@ -92,7 +92,7 @@ function MeaningPhasePane({ phase }: { phase: MeaningPhase }) {
           query={[
             "insert",
             "  $o isa ownership;",
-            '  $p isa person, has name "Dana";',
+            "  $p isa person, has name \"Dana\";",
             "  $o links (owner: $p);",
           ]}
           violation="Schema violation"
@@ -219,7 +219,11 @@ export function Meaning() {
                   className={phase === key ? "lifecycle-step is-on" : "lifecycle-step"}
                   data-lifecycle-step={key}
                   aria-pressed={phase === key}
-                  onClick={() => {
+                  onMouseDown={(event) => {
+                    event.preventDefault();
+                  }}
+                  onClick={(event) => {
+                    event.preventDefault();
                     hold.current = true;
                     setHeldPhase(key);
                   }}
@@ -233,7 +237,7 @@ export function Meaning() {
 
         <MeaningLayered phase={phase} />
 
-        <figure className="domain-graphic meaning-pipeline" data-pipe="v2" data-meaning="pipeline-v2" data-meaning-phase={phase} data-motion="meaning-v1">
+        <figure className="domain-graphic meaning-pipeline" data-pipe="v2" data-meaning="pipeline-v2" data-meaning-phase={phase} data-motion="meaning-motion-v1">
           <div className="hero-pipe-flow">
             <PipelineFeeds kind="meaning" />
             <div className="hero-pipe-col" data-col="sources">
