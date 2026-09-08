@@ -233,7 +233,7 @@ export function Meaning() {
 
         <MeaningLayered phase={phase} />
 
-        <figure className="domain-graphic meaning-pipeline" data-pipe="v2" data-meaning-phase={phase} data-motion="meaning-v1">
+        <figure className="domain-graphic meaning-pipeline" data-pipe="v2" data-meaning="pipeline-v2" data-meaning-phase={phase} data-motion="meaning-v1">
           <div className="hero-pipe-flow">
             <PipelineFeeds kind="meaning" />
             <div className="hero-pipe-col" data-col="sources">
