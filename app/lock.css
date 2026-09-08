@@ -698,7 +698,64 @@
 .job-visual {
   display: flex;
   align-items: center;
-  min-height: 148px;
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  min-height: 168px;
+  border: 1px solid var(--raised);
+  border-radius: 6px;
+  background: #0c0b14;
+}
+
+.job-graphic {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.job-art-kicker {
+  fill: var(--mute-2);
+  font-family: var(--font-family-code);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.job-pill rect,
+.job-pill circle {
+  fill: #12101d;
+  stroke: var(--raised);
+}
+
+.job-pill text {
+  fill: var(--mute);
+  font-family: var(--font-family-code);
+  font-size: 10px;
+}
+
+.job-glow rect {
+  fill: color-mix(in srgb, #01e870 12%, #0e0e0e);
+  stroke: #01e870;
+  filter: drop-shadow(0 0 8px #01e870);
+}
+
+.job-glow circle {
+  fill: #01e870;
+}
+
+.job-glow-title,
+.job-glow-sub {
+  fill: #01e870;
+  font-family: var(--font-family-code);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+}
+
+.job-glow-sub {
+  fill: var(--mute);
+}
+
+.typed-edge.is-dot {
+  stroke-dasharray: 2 2;
 }
 
 .suite-board.is-products {
