@@ -163,7 +163,7 @@ export const copy = {
     marks: ["Structure", "enforced", "suggestion"],
   },
   s5: {
-    h2: "TypeDB products",
+    h2: "The TypeDB suite",
     lede: "One schema. Four ways to run it. Community Edition and Enterprise share the engine.",
     products: [
       {
