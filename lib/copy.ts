@@ -49,6 +49,12 @@ export const copy = {
       "When an AI system answers a question or triggers an action on top of TypeDB, it does so over an explicit network of entities, relations, and rules. The reasoning path is stored as data: which facts were used, which rules fired, and how intermediate conclusions were derived.",
     auditBody2:
       "Alternative hypotheses can be compared, challenged, and re-run. The basis for any decision is examinable in terms of schema, constraints, and logical steps, not just token probabilities or embedding distances.",
+    metrics: [
+      { value: "Sub-ms", label: "Schema and constraint checks" },
+      { value: "1,000+", label: "tx/sec reads & writes" },
+      { value: "100 GB–4 TB", label: "Knowledge graph sizes" },
+      { value: "ACID", label: "Compliant with persistence" },
+    ],
   },
   analytics: {
     kicker: "Knowledge Graph Analytics",
