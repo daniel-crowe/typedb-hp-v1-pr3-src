@@ -602,8 +602,11 @@
 </div>
 <script>
 (function () {
-  const FREEZE = new URLSearchParams(location.search).get('freeze') === '1'
-    || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Homepage never sends ?freeze=1. Only that flag is a static snapshot.
+  // Reduced-motion still runs the typed loop (faster) so §6 is not a frozen turn-1.
+  const QUERY_FREEZE = new URLSearchParams(location.search).get('freeze') === '1';
+  const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FREEZE = QUERY_FREEZE;
   if (FREEZE) document.documentElement.classList.add('freeze');
 
   // --- 4-turn Memgraph loop (Style stamp verbatim) ---
@@ -700,7 +703,7 @@
     }
   ];
 
-  const CADENCE_MS = 2400;
+  const CADENCE_MS = 1600;
   const PLACEHOLDER = 'Ask me anything...';
   let turnIdx = 0;
   let playGen = 0;
@@ -771,6 +774,7 @@
   function resetComposer() {
     if (typeTimer) { clearTimeout(typeTimer); typeTimer = null; }
     phEl.classList.remove('typing');
+    phEl.removeAttribute('data-chat');
     phEl.textContent = PLACEHOLDER;
     sendEl.classList.remove('is-send');
   }
@@ -778,17 +782,20 @@
   function typeIntoComposer(text) {
     return new Promise((resolve) => {
       phEl.classList.add('typing');
+      phEl.setAttribute('data-chat', 'typing');
       phEl.textContent = '';
       let i = 0;
       const step = () => {
         i += 1;
         phEl.textContent = text.slice(0, i);
         if (i >= text.length) {
-          typeTimer = setTimeout(resolve, 160);
+          typeTimer = setTimeout(resolve, REDUCE ? 80 : 180);
           return;
         }
         const ch = text[i - 1];
-        const delay = ch === ' ' ? 26 : (ch === '?' || ch === '.' ? 70 : 15 + (i % 3) * 3);
+        const delay = REDUCE
+          ? 7
+          : (ch === ' ' ? 28 : (ch === '?' || ch === '.' ? 80 : 16 + (i % 3) * 4));
         typeTimer = setTimeout(step, delay);
       };
       step();
@@ -817,7 +824,7 @@
     sendPulse();
     resetComposer();
     appendUser(t.q, clockFor(turnIdx), true);
-    spawn(4);
+    spawn(4, 0);
     await wait(420);
     if (gen !== playGen) return;
 
@@ -1129,17 +1136,26 @@
   const INTERVAL = 1250;
   const active = [];
 
-  function spawn(pathIndex) {
+  function spawn(pathIndex, startFrac) {
     if (pathIndex >= pathMeta.length) return;
+    const meta = pathMeta[pathIndex];
     const brandReturn = pathIndex === 4;
     const c = document.createElementNS(NS, 'circle');
-    c.setAttribute('r', brandReturn ? '3.4' : '3');
+    c.setAttribute('r', brandReturn ? '5' : '3');
     c.setAttribute('fill', brandReturn ? '#01E870' : '#e8e8ee');
+    if (brandReturn) c.setAttribute('data-packet', 'chat-to-graph');
     c.style.filter = brandReturn
-      ? 'drop-shadow(0 0 4px rgba(1,232,112,0.95)) drop-shadow(0 0 10px rgba(1,232,112,0.55))'
+      ? 'drop-shadow(0 0 6px rgba(1,232,112,1)) drop-shadow(0 0 14px rgba(1,232,112,0.65))'
       : 'drop-shadow(0 0 3px rgba(255,255,255,0.9)) drop-shadow(0 0 7px rgba(1,232,112,0.45))';
     packetsG.appendChild(c);
-    active.push({ el: c, pathIndex, dist: 0, done: false });
+    const frac = typeof startFrac === 'number' ? startFrac : (brandReturn ? 0.38 : 0);
+    active.push({
+      el: c,
+      pathIndex,
+      dist: meta.len * frac,
+      done: false,
+      speed: brandReturn ? 0.055 : SPEED
+    });
   }
 
   function flashBadge() {
@@ -1175,18 +1191,25 @@
       if (!meta) return;
       const pt = meta.el.getPointAtLength(meta.len * frac);
       const c = document.createElementNS(NS, 'circle');
-      c.setAttribute('r', brand ? '3.4' : '3');
+      c.setAttribute('r', brand ? '5' : '3');
       c.setAttribute('fill', brand ? '#01E870' : '#e8e8ee');
+      if (brand) c.setAttribute('data-packet', 'chat-to-graph');
       c.setAttribute('cx', pt.x); c.setAttribute('cy', pt.y);
       c.style.filter = brand
-        ? 'drop-shadow(0 0 4px rgba(1,232,112,0.95)) drop-shadow(0 0 10px rgba(1,232,112,0.55))'
+        ? 'drop-shadow(0 0 6px rgba(1,232,112,1)) drop-shadow(0 0 14px rgba(1,232,112,0.65))'
         : 'drop-shadow(0 0 3px rgba(255,255,255,0.9)) drop-shadow(0 0 7px rgba(1,232,112,0.45))';
       packetsG.appendChild(c);
     });
     return;
   }
 
-  startPlay(0);
+  // Seed a completed prior turn, then type the next question in the input.
+  // First paint is history + a live caret — not an empty or frozen turn-1 snapshot.
+  appendUser(TURNS[0].q, clockFor(0), false);
+  appendBot(TURNS[0], clockFor(0), false);
+  syncTypeql(TURNS[0]);
+  setInferred(!!TURNS[0].ruleFires, { immediate: true });
+  startPlay(1);
 
   let last = performance.now();
   let fireAcc = 0;
@@ -1206,7 +1229,7 @@
     }
     for (const p of active) {
       if (p.done) continue;
-      p.dist += SPEED * dt;
+      p.dist += (p.speed || SPEED) * dt;
       const meta = pathMeta[p.pathIndex];
       if (!meta || p.dist >= meta.len) { p.done = true; p.el.remove(); continue; }
       const pt = meta.el.getPointAtLength(p.dist);
@@ -1215,7 +1238,7 @@
     for (let i = active.length - 1; i >= 0; i--) if (active[i].done) active.splice(i, 1);
     requestAnimationFrame(tick);
   }
-  spawn(0); spawn(1); spawn(2); spawn(4);
+  spawn(0); spawn(1); spawn(2); spawn(4, 0.42);
   requestAnimationFrame(tick);
 })();
 </script>
