@@ -626,3 +626,30 @@ html[data-freeze="1"] .meaning-pipeline[data-motion="meaning-motion-v1"] .typed-
     max-width: none;
   }
 }
+
+/* iframe swap: locked pass-b-chat-v4.1, no React entity cards */
+.section-proof:has(.passb-iframe-wrap) {
+  overflow-x: hidden;
+}
+
+.passb-iframe-wrap {
+  width: 100vw;
+  max-width: 100vw;
+  margin: 28px 0 40px;
+  margin-left: calc(50% - 50vw);
+  background: #000;
+}
+
+.passb-iframe {
+  display: block;
+  width: 100%;
+  height: 680px;
+  border: 0;
+  background: #000;
+}
+
+@media (max-width: 768px) {
+  .passb-iframe {
+    height: 640px;
+  }
+}
