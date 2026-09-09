@@ -3,3 +3,1210 @@
 <head>
 <meta charset="utf-8"/>
 <title>Pass B-chat v4.1 · TypeDB Connected Context</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<style>
+  :root {
+    --bg: #08080c;
+    --brand-black: #0a0a10;
+    --green: #01E870;
+    --green-dim: rgba(1,232,112,0.12);
+    --green-border: rgba(1,232,112,0.42);
+    --person: #7aa2ff;
+    --rule: #c3e88d;
+    --muted: #8a8a98;
+    --dim: #555566;
+    --label: #9a9aa6;
+    --chip-bg: #1a1a24;
+    --mono: Monaco, "Liberation Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: #f4f4f6;
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+    height: auto;
+    min-height: 0;
+  }
+  body { display: flex; justify-content: center; align-items: flex-start; }
+  .stage {
+    width: 1280px;
+    padding: 48px 48px 56px;
+    position: relative;
+    background:
+      radial-gradient(ellipse 55% 45% at 48% 48%, rgba(1,232,112,0.045), transparent 62%),
+      radial-gradient(ellipse 35% 35% at 72% 42%, rgba(122,162,255,0.025), transparent 58%),
+      var(--bg);
+  }
+  .dots {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.055) 1px, transparent 1.1px);
+    background-size: 20px 20px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000 15%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000 15%, transparent 75%);
+    pointer-events: none;
+    animation: drift 32s linear infinite;
+  }
+  @keyframes drift {
+    from { background-position: 0 0; }
+    to { background-position: 20px 20px; }
+  }
+  .eyebrow-wrap { display: flex; justify-content: center; margin-bottom: 14px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 5px 14px; border-radius: 999px;
+    border: 1px solid rgba(1,232,112,0.38);
+    background: rgba(1,232,112,0.05);
+    box-shadow: 0 0 18px rgba(1,232,112,0.1);
+    font-family: var(--mono);
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #f4f4f6;
+  }
+  .eyebrow .live {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green), 0 0 14px rgba(1,232,112,0.42);
+    animation: pulse-scale 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse-scale {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.85; }
+  }
+  h2 {
+    text-align: center;
+    font-size: 38px; font-weight: 520;
+    letter-spacing: -0.025em; line-height: 1.15; color: #f4f4f6;
+  }
+  .instrument-wrap { margin-top: 48px; position: relative; width: 100%; padding: 16px 24px 0; }
+  .row {
+    position: relative;
+    display: flex; flex-direction: row; align-items: flex-start;
+    gap: 56px; width: 1136px; height: 320px; margin: 0 auto;
+  }
+
+  /* LEFT · Feeds · 8 pills · 3 LIVE */
+  .sources {
+    position: relative;
+    display: flex; flex-direction: column; gap: 5px;
+    border-radius: 8px; border: 1px solid #3a3a46;
+    background: rgba(12,12,18,0.92);
+    padding: 10px 10px 11px;
+    width: 188px; flex-shrink: 0; z-index: 3;
+    height: 320px;
+  }
+  .sources .plabel {
+    font-family: var(--mono); font-size: 10px; color: var(--label); letter-spacing: 0.08em;
+    text-transform: uppercase; margin-bottom: 2px; padding: 0 2px;
+  }
+  .feed-list { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .feed-pill {
+    position: relative;
+    display: flex; align-items: center; gap: 7px;
+    border-radius: 6px;
+    padding: 5px 8px;
+    font-size: 11px;
+    line-height: 1.25;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--muted);
+    opacity: 0.48;
+  }
+  .feed-pill .fd {
+    width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0;
+    background: #4a4a58;
+  }
+  .feed-pill.live {
+    opacity: 1;
+    color: #f4f4f6;
+    background: rgba(1,232,112,0.08);
+    border-color: rgba(1,232,112,0.42);
+    box-shadow: 0 0 12px rgba(1,232,112,0.08);
+  }
+  .feed-pill.live .fd {
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green), 0 0 10px rgba(1,232,112,0.45);
+    animation: pulse-scale 1.6s ease-in-out infinite;
+  }
+  .feed-pill .flabel { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .feed-pill .ftag {
+    font-family: var(--mono); font-size: 8px; letter-spacing: 0.08em;
+    color: var(--green); text-transform: uppercase;
+  }
+  .feed-pill:not(.live) .ftag { display: none; }
+  .anchor { position: absolute; width: 0; height: 0; }
+  .anchor-pill-out { right: 0; top: 50%; transform: translateY(-50%); }
+  .anchor-mg-in { left: 0; top: 50%; transform: translateY(-50%); }
+  .anchor-mg-out { right: 0; top: 50%; transform: translateY(-50%); }
+  .anchor-chat-in { left: 0; top: 50%; transform: translateY(-50%); }
+
+  .mid {
+    display: flex; flex-direction: row; align-items: flex-start;
+    gap: 100px; flex: 1; min-width: 0;
+  }
+
+  /* CENTER · Pass A unlabeled node-link · TypeDB green chrome */
+  .graph-frame {
+    position: relative;
+    border-radius: 10px;
+    padding: 1px;
+    background: rgba(1,232,112,0.42);
+    box-shadow: 0 0 0 1px rgba(1,232,112,0.06), 0 0 40px rgba(1,232,112,0.1);
+    width: 400px; height: 320px; flex-shrink: 0; z-index: 3;
+  }
+  .graph-inner {
+    position: relative; height: 100%;
+    border-radius: 9px; background: var(--brand-black); overflow: hidden;
+    box-shadow: inset 0 0 60px rgba(1,232,112,0.03);
+  }
+  .graph-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .brand-badge {
+    position: absolute; top: 10px; right: 10px; z-index: 10;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
+    color: #a0a0ae; padding: 4px 8px;
+    border: 1px solid #2a2a36; border-radius: 6px; background: rgba(0,0,0,0.5);
+  }
+  .status {
+    position: absolute; top: 12px; left: 12px; z-index: 10;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 9px 4px 6px; border-radius: 999px;
+    background: rgba(1,232,112,0.14);
+    border: 1px solid rgba(1,232,112,0.5);
+    box-shadow: 0 0 14px rgba(1,232,112,0.16);
+    font-family: var(--mono); font-size: 10px; color: var(--green);
+    animation: badge-pulse 2.2s ease-in-out infinite;
+  }
+  .status .status-dot { width: 11px; height: 11px; flex-shrink: 0; }
+  @keyframes badge-pulse {
+    0%, 100% { box-shadow: 0 0 10px rgba(1,232,112,0.14); border-color: rgba(1,232,112,0.45); }
+    50% { box-shadow: 0 0 18px rgba(1,232,112,0.38); border-color: rgba(1,232,112,0.85); }
+  }
+
+  /* RIGHT · Memgraph 4-turn chat · Style stamp */
+  .chat-frame {
+    position: relative;
+    border-radius: 12px;
+    padding: 1px;
+    background: linear-gradient(to bottom right, rgba(1,232,112,0.35), rgba(255,255,255,0.04), rgba(1,232,112,0.08));
+    width: 360px; height: 320px; flex-shrink: 0; z-index: 3;
+  }
+  .chat-inner {
+    position: relative;
+    display: flex; flex-direction: column;
+    height: 100%;
+    border-radius: 11px;
+    background: var(--brand-black);
+    overflow: hidden;
+    color: #fff;
+  }
+  .winbar {
+    display: flex; align-items: center;
+    padding: 10px 12px 4px;
+  }
+  .traffic { display: flex; gap: 6px; }
+  .traffic i { width: 9px; height: 9px; border-radius: 50%; display: block; }
+  .traffic i:nth-child(1) { background: #FF5F57; }
+  .traffic i:nth-child(2) { background: #FEBC2E; }
+  .traffic i:nth-child(3) { background: #28C840; }
+  .plus {
+    margin-left: auto;
+    height: 18px; width: 18px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.18);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; line-height: 1; padding-bottom: 1px;
+    color: rgba(255,255,255,0.65);
+  }
+  .chat-messages {
+    flex: 1;
+    padding: 2px 9px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    justify-content: flex-start;
+    min-height: 0;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.14) transparent;
+  }
+  .chat-messages::-webkit-scrollbar { width: 6px; }
+  .chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.14);
+    border-radius: 999px;
+  }
+  .user-wrap {
+    align-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    max-width: 97%;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  .bot-wrap {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  .ts {
+    font-size: 8px;
+    color: #8a8a98;
+    padding: 0 2px;
+  }
+  .user {
+    background: linear-gradient(90deg, #01E870 0%, #00c45e 100%);
+    color: #06140e;
+    font-size: 9.5px;
+    font-weight: 560;
+    padding: 6px 12px;
+    border-radius: 16px;
+    line-height: 1.28;
+    animation: chatIn 0.35s ease-out;
+  }
+  .bot {
+    background: #14141c;
+    border: 1px solid #242432;
+    border-radius: 10px;
+    padding: 6px 8px;
+    font-size: 10px;
+    line-height: 1.3;
+    animation: chatIn 0.35s ease-out 0.05s both;
+  }
+  .bot .ai-label {
+    font-family: var(--mono);
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--green);
+    margin-bottom: 3px;
+  }
+  .bot .a-text { color: #e8e8f0; font-size: 9.5px; line-height: 1.32; margin-bottom: 4px; }
+  .bot .a-text code {
+    color: var(--green);
+    font-family: var(--mono);
+    font-size: 9px;
+  }
+  .bot .suggest {
+    margin-top: 2px;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .bot .suggest button {
+    all: unset;
+    cursor: pointer;
+    color: var(--green);
+    font-size: 9px;
+    opacity: 0.92;
+    line-height: 1.3;
+    padding: 1px 0;
+  }
+  .bot .suggest button::before {
+    content: "";
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-right: 6px;
+    box-shadow: 0 0 6px rgba(1,232,112,0.55);
+    vertical-align: 1px;
+  }
+  .bot .suggest button:hover { opacity: 1; text-decoration: underline; }
+  @keyframes chatIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .composer-wrap { padding: 0 10px 10px; }
+  .composer-ring {
+    border-radius: 999px;
+    padding: 1px;
+    background: linear-gradient(to bottom right, rgba(1,232,112,0.45), rgba(255,255,255,0.08));
+  }
+  .composer {
+    display: flex; align-items: center; gap: 8px;
+    border-radius: 999px;
+    background: #12121a;
+    padding: 5px 5px 5px 14px;
+  }
+  .composer .ph {
+    flex: 1;
+    font-size: 11px;
+    color: rgba(255,255,255,0.38);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .composer .ph.typing { color: #f4f4f6; }
+  .composer .ph.typing::after {
+    content: "";
+    display: inline-block;
+    width: 1.5px;
+    height: 11px;
+    margin-left: 1px;
+    background: #f4f4f6;
+    vertical-align: -1px;
+    animation: caretBlink 1s step-end infinite;
+  }
+  @keyframes caretBlink { 50% { opacity: 0; } }
+  .composer .clip { opacity: 0.5; display: flex; }
+  .composer .send {
+    width: 22px; height: 22px; flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 10px rgba(1,232,112,0.35);
+  }
+  .composer .send.is-send {
+    box-shadow: 0 0 16px rgba(1,232,112,0.75);
+  }
+
+  .connectors {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 4; overflow: visible;
+  }
+
+  /* TypeQL terminal BELOW L·C·R */
+  .typeql-band {
+    width: 1136px; margin: 18px auto 0;
+    border-radius: 10px;
+    border: 1px solid #2a2a36;
+    background: #0c0c12;
+    overflow: hidden;
+    box-shadow: 0 10px 32px rgba(0,0,0,0.35);
+  }
+  .typeql-bar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 12px;
+    border-bottom: 1px solid #1c1c26;
+    background: #0a0a10;
+  }
+  .typeql-bar .dotrow { display: flex; gap: 5px; }
+  .typeql-bar .dotrow i { width: 7px; height: 7px; border-radius: 50%; background: #3a3a48; display: block; }
+  .typeql-bar .dotrow i:nth-child(1) { background: #FF5F57; }
+  .typeql-bar .dotrow i:nth-child(2) { background: #FEBC2E; }
+  .typeql-bar .dotrow i:nth-child(3) { background: #28C840; }
+  .typeql-bar .ttl {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  .typeql-bar .tabs { display: flex; gap: 6px; margin-left: 8px; }
+  .typeql-bar .tabs span {
+    font-family: var(--mono); font-size: 9.5px; color: var(--dim);
+    padding: 2px 7px; border-radius: 4px; border: 1px solid transparent;
+  }
+  .typeql-bar .tabs span.on {
+    color: var(--green);
+    border-color: rgba(1,232,112,0.35);
+    background: rgba(1,232,112,0.08);
+  }
+  .typeql-bar .pill {
+    margin-left: auto;
+    font-family: var(--mono); font-size: 9px; color: var(--green);
+    padding: 2px 8px; border-radius: 999px;
+    border: 1px solid rgba(1,232,112,0.35); background: rgba(1,232,112,0.08);
+  }
+  .typeql-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    min-height: 132px;
+  }
+  .typeql-pane {
+    padding: 10px 12px 12px;
+    font-family: var(--mono); font-size: 10.5px; line-height: 1.55;
+  }
+  .typeql-pane + .typeql-pane { border-left: 1px solid #1c1c26; }
+  .typeql-pane .ph {
+    font-size: 8.5px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--dim); margin-bottom: 6px;
+  }
+  .typeql-pane .code { color: #c8c8d4; }
+  .typeql-pane .kw { color: #c792ea; }
+  .typeql-pane .ty { color: var(--green); }
+  .typeql-pane .fn { color: var(--rule); }
+  .typeql-pane .role { color: #7aa2ff; }
+  .typeql-pane .st { color: #82aaff; }
+  .typeql-pane .cmt { color: #546e7a; }
+  .typeql-pane .ln { color: #3a3a48; display: inline-block; width: 16px; user-select: none; }
+  .reject-line {
+    margin-top: 8px;
+    padding: 7px 9px;
+    border-radius: 7px;
+    background: rgba(255,92,122,0.08);
+    border: 1px solid rgba(255,92,122,0.35);
+  }
+  .reject-line .rt {
+    font-size: 10px; color: #ff7a90; font-weight: 600; margin-bottom: 2px;
+  }
+  .reject-line .rb { font-size: 9.5px; color: #c8a0a8; }
+  .ok-line {
+    margin-top: 8px;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 8px; border-radius: 6px;
+    background: var(--green-dim); border: 1px solid rgba(1,232,112,0.38);
+    font-size: 9.5px; color: var(--green);
+  }
+
+
+
+  html.freeze .dots,
+  html.freeze .eyebrow .live,
+  html.freeze .status,
+  html.freeze .feed-pill.live .fd { animation: none !important; }
+  html.freeze .bot,
+  html.freeze .user { animation: none !important; }
+  @media (prefers-reduced-motion: reduce) {
+    .dots, .eyebrow .live, .status, .feed-pill.live .fd { animation: none !important; }
+    .bot, .user { animation: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="stage" id="shot">
+  <div class="dots" aria-hidden="true"></div>
+
+  <div class="eyebrow-wrap">
+    <div class="eyebrow"><span class="live"></span>AI Systems</div>
+  </div>
+  <h2>Connected context across your data</h2>
+
+  <div class="instrument-wrap">
+    <div class="row" id="row">
+      <div class="sources" id="sources">
+        <div class="plabel">Feeds</div>
+        <div class="feed-list">
+          <div class="feed-pill live" data-feed="ownership" data-live="1">
+            <span class="fd"></span><span class="flabel">Beneficial ownership</span><span class="ftag">LIVE</span>
+            <div class="anchor anchor-pill-out" data-anchor="live-0"></div>
+          </div>
+          <div class="feed-pill live" data-feed="txns" data-live="1">
+            <span class="fd"></span><span class="flabel">Transactions</span><span class="ftag">LIVE</span>
+            <div class="anchor anchor-pill-out" data-anchor="live-1"></div>
+          </div>
+          <div class="feed-pill live" data-feed="devices" data-live="1">
+            <span class="fd"></span><span class="flabel">Devices</span><span class="ftag">LIVE</span>
+            <div class="anchor anchor-pill-out" data-anchor="live-2"></div>
+          </div>
+          <div class="feed-pill" data-feed="siem">
+            <span class="fd"></span><span class="flabel">SIEM</span>
+          </div>
+          <div class="feed-pill" data-feed="ros">
+            <span class="fd"></span><span class="flabel">ROS</span>
+          </div>
+          <div class="feed-pill" data-feed="lims">
+            <span class="fd"></span><span class="flabel">LIMS</span>
+          </div>
+          <div class="feed-pill" data-feed="erp">
+            <span class="fd"></span><span class="flabel">ERP</span>
+          </div>
+          <div class="feed-pill" data-feed="misp">
+            <span class="fd"></span><span class="flabel">MISP</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mid">
+        <div class="graph-frame" id="graphFrame">
+          <div class="graph-inner">
+            <svg class="graph-svg" id="graphSvg"></svg>
+            <div class="status" id="statusBadge">
+              <svg class="status-dot" width="11" height="11" viewBox="0 0 12 12" fill="none">
+                <circle cx="6" cy="6" r="6" fill="#01E870"/>
+                <path d="M3.4 6.2l1.7 1.7 3.5-3.6" stroke="#08080c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Schema enforced
+            </div>
+            <div class="brand-badge">TYPEDB</div>
+          </div>
+          <div class="anchor anchor-mg-in" data-anchor="memgraph-in"></div>
+          <div class="anchor anchor-mg-out" data-anchor="memgraph-out"></div>
+        </div>
+
+        <div class="chat-frame" id="chatFrame">
+          <div class="chat-inner">
+            <div class="winbar">
+              <div class="traffic"><i></i><i></i><i></i></div>
+              <div class="plus">+</div>
+            </div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="composer-wrap">
+              <div class="composer-ring">
+                <div class="composer">
+                  <div class="ph">Ask me anything...</div>
+                  <span class="clip" aria-hidden="true">
+                    <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2">
+                      <path d="M21.44 11.05l-8.49 8.49a5.5 5.5 0 01-7.78-7.78l9.19-9.19a3.5 3.5 0 014.95 4.95l-9.2 9.19a1.5 1.5 0 01-2.12-2.12l8.49-8.48"/>
+                    </svg>
+                  </span>
+                  <div class="send">
+                    <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
+                      <path d="M3.2 7.3l2.4 2.4 5.2-5.4" stroke="#06140e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="anchor anchor-chat-in" data-anchor="chat-in"></div>
+          </div>
+        </div>
+      </div>
+
+      <svg class="connectors" id="connectors" viewBox="0 0 1136 320" preserveAspectRatio="none">
+        <defs>
+          <marker id="diagram-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+          </marker>
+        </defs>
+        <g id="pathLayer"></g>
+        <g id="packets"></g>
+      </svg>
+    </div>
+
+    <div class="typeql-band" id="typeqlBand">
+      <div class="typeql-bar">
+        <div class="dotrow"><i></i><i></i><i></i></div>
+        <div class="ttl">TYPEQL</div>
+        <div class="tabs">
+          <span class="on">query.tql</span>
+          <span>write.tql</span>
+          <span>log</span>
+        </div>
+        <div class="pill">schema enforced</div>
+      </div>
+      <div class="typeql-grid">
+        <div class="typeql-pane" id="typeqlQuery">
+          <div class="ph" id="typeqlPh">Match · structuring check</div>
+          <div class="code" id="typeqlCode"></div>
+          <div class="ok-line" id="typeqlOk">
+            <svg width="9" height="9" viewBox="0 0 12 12"><circle cx="6" cy="6" r="6" fill="#01E870"/><path d="M3.4 6.2l1.7 1.7 3.5-3.6" stroke="#08080c" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <span id="typeqlOkText">$flag true · escalate · 8 × under $10,000 → $14,200</span>
+          </div>
+        </div>
+        <div class="typeql-pane">
+          <div class="ph">Write · blocked by constraints</div>
+          <div class="code">
+            <div><span class="ln">1</span><span class="kw">insert</span> $t <span class="kw">isa</span> <span class="ty">transaction</span>,</div>
+            <div><span class="ln">2</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">has</span> <span class="st">amount</span> 9800;</div>
+            <div><span class="ln">3</span>$t <span class="kw">links</span> (<span class="role">source-account</span>: $a);</div>
+            <div><span class="ln">4</span><span class="cmt"># missing destination-account</span></div>
+          </div>
+          <div class="reject-line">
+            <div class="rt">✗ Schema violation · role incomplete</div>
+            <div class="rb">transaction requires source-account + destination-account - write aborted</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  const FREEZE = new URLSearchParams(location.search).get('freeze') === '1'
+    || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (FREEZE) document.documentElement.classList.add('freeze');
+
+  // --- 4-turn Memgraph loop (Style stamp verbatim) ---
+  const TURNS = [
+    {
+      q: "Did under-threshold transfers across John Smith's accounts in the last 24 hours form a structuring pattern?",
+      a: 'Yes. Eight transfers from 2026-01-18 to 2026-01-19 total $14,200, above the $10,000 SAR threshold, so <code>is-structuring</code> on ACC-7834 fires.',
+      chips: [
+        { label: 'Which accounts share the owner?', go: 1 },
+        { label: 'Which device links them?', go: 1 }
+      ],
+      typeql: {
+        ph: 'Match · structuring check',
+        lines: [
+          ['kw','match'],
+          ['raw','  $a ','kw','isa','raw',' ','ty','account','raw',', ','kw','has','raw',' ','st','account-id','raw',' "ACC-7834";'],
+          ['raw','  $own (','role','owner','raw',': $c, ','role','owned-account','raw',': $a) ','kw','isa','raw',' ','ty','ownership','raw',';'],
+          ['raw','  $flag = ','fn','is-structuring','raw','($a, $start, $end);'],
+          ['kw','select','raw',' $c, $flag;'],
+          ['cmt','# 8 txns · $14,200 · threshold $10,000']
+        ],
+        ok: '$flag true · escalate · 8 × under $10,000 → $14,200'
+      },
+      focal: 0,
+      ruleFires: true
+    },
+    {
+      q: 'Which accounts share the owner?',
+      a: 'John Smith owns ACC-7834, ACC-9102, and ACC-4421. Those three also share device fingerprint FP-8472ABC.',
+      chips: [
+        { label: 'What is the transfer sum in that window?', go: 2 },
+        { label: 'What does <code>is-structuring</code> require?', go: 3 }
+      ],
+      typeql: {
+        ph: 'Match · ownership + device',
+        lines: [
+          ['kw','match'],
+          ['raw','  $c ','kw','isa','raw',' ','ty','person','raw',', ','kw','has','raw',' ','st','full-name','raw',' "John Smith";'],
+          ['raw','  $own (','role','owner','raw',': $c, ','role','owned-account','raw',': $a) ','kw','isa','raw',' ','ty','ownership','raw',';'],
+          ['raw','  $a ','kw','has','raw',' ','st','account-id','raw',' $id;'],
+          ['raw','  $dl (','role','device','raw',': $d, ','role','linked-account','raw',': $a) ','kw','isa','raw',' ','ty','device-linked-accounts','raw',';'],
+          ['raw','  $d ','kw','has','raw',' ','st','fingerprint','raw',' "FP-8472ABC";'],
+          ['kw','select','raw',' $id;']
+        ],
+        ok: 'ACC-7834 · ACC-9102 · ACC-4421 · FP-8472ABC'
+      },
+      focal: 1,
+      ruleFires: false
+    },
+    {
+      q: 'What is the transfer sum in that window?',
+      a: 'Eight under-threshold transfers across those accounts from 2026-01-18 to 2026-01-19 sum to $14,200. The reporting threshold is $10,000.',
+      chips: [
+        { label: 'What does <code>is-structuring</code> require?', go: 3 },
+        { label: 'What should happen next?', go: 3 }
+      ],
+      typeql: {
+        ph: 'Match · transfer window sum',
+        lines: [
+          ['kw','match'],
+          ['raw','  $a ','kw','isa','raw',' ','ty','account','raw',', ','kw','has','raw',' ','st','account-id','raw',' $id;'],
+          ['raw','  $id ','kw','in','raw',' ["ACC-7834", "ACC-9102", "ACC-4421"];'],
+          ['raw','  $t (','role','source-account','raw',': $a) ','kw','isa','raw',' ','ty','transaction','raw',';'],
+          ['raw','  $t ','kw','has','raw',' ','st','amount','raw',' $amt, ','kw','has','raw',' ','st','posted-at','raw',' $ts;'],
+          ['kw','reduce','raw',' $sum = ','fn','sum','raw','($amt);'],
+          ['cmt','# window 2026-01-18 → 2026-01-19 · $14,200']
+        ],
+        ok: '$sum = 14200 · threshold 10000 · 8 transfers'
+      },
+      focal: 2,
+      ruleFires: false
+    },
+    {
+      q: 'What does <code>is-structuring</code> require?',
+      a: '<code>is-structuring</code> on ACC-7834 for 2026-01-18 to 2026-01-19 returns true when sub-threshold transfers in the window sum above $10,000. Escalate for investigation.',
+      chips: [
+        { label: 'Did under-threshold transfers form a structuring pattern?', go: 0 },
+        { label: 'Which accounts share the owner?', go: 1 }
+      ],
+      typeql: {
+        ph: 'Fun · is-structuring rule',
+        lines: [
+          ['kw','fun','raw',' ','fn','is-structuring','raw','($a: ','ty','account','raw',', $start: ','ty','datetime','raw',', $end: ','ty','datetime','raw',') → ','ty','boolean',':'],
+          ['kw','match'],
+          ['raw','  $sum = ','fn','under-threshold-sum','raw','($a, $start, $end);'],
+          ['raw','  $sum > 10000;'],
+          ['kw','return','raw',' true;'],
+          ['cmt','# ACC-7834 · 2026-01-18→19 · $14,200 → true']
+        ],
+        ok: 'true · escalate for investigation'
+      },
+      focal: 3,
+      ruleFires: true
+    }
+  ];
+
+  const CADENCE_MS = 2400;
+  const PLACEHOLDER = 'Ask me anything...';
+  let turnIdx = 0;
+  let playGen = 0;
+  let typeTimer = null;
+  let advanceTimer = null;
+  const chatEl = document.getElementById('chatMessages');
+  const phEl = document.querySelector('.composer .ph');
+  const sendEl = document.querySelector('.composer .send');
+
+  function plainText(html) {
+    const d = document.createElement('div');
+    d.innerHTML = html;
+    return d.textContent || '';
+  }
+
+  function wait(ms) {
+    return new Promise((resolve) => { advanceTimer = setTimeout(resolve, ms); });
+  }
+
+  function clockFor(idx) {
+    const mins = 37 + (idx % 12);
+    return `10:${String(mins).padStart(2, '0')} AM`;
+  }
+
+  function scrollChat() {
+    chatEl.scrollTop = chatEl.scrollHeight;
+  }
+
+  function trimHistory() {
+    while (chatEl.children.length > 8) chatEl.removeChild(chatEl.firstChild);
+  }
+
+  function appendUser(html, time, animate) {
+    const wrap = document.createElement('div');
+    wrap.className = 'user-wrap';
+    wrap.innerHTML =
+      `<div class="user"${animate ? '' : ' style="animation:none"'}>${html}</div>` +
+      `<div class="ts">${time}</div>`;
+    chatEl.appendChild(wrap);
+    trimHistory();
+    scrollChat();
+  }
+
+  function appendBot(t, time, animate) {
+    const chips = t.chips.map((c, i) =>
+      `<button type="button" data-go="${c.go}" data-chip="${i}">${c.label}</button>`
+    ).join('');
+    const wrap = document.createElement('div');
+    wrap.className = 'bot-wrap';
+    wrap.innerHTML =
+      `<div class="bot"${animate ? '' : ' style="animation:none"'}>` +
+        `<div class="ai-label">AI RESPONSE</div>` +
+        `<div class="a-text">${t.a}</div>` +
+        `<div class="suggest">${chips}</div>` +
+      `</div>` +
+      `<div class="ts">${time}</div>`;
+    chatEl.appendChild(wrap);
+    wrap.querySelectorAll('button[data-go]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const go = Number(btn.getAttribute('data-go'));
+        startPlay(go);
+      });
+    });
+    trimHistory();
+    scrollChat();
+  }
+
+  function resetComposer() {
+    if (typeTimer) { clearTimeout(typeTimer); typeTimer = null; }
+    phEl.classList.remove('typing');
+    phEl.textContent = PLACEHOLDER;
+    sendEl.classList.remove('is-send');
+  }
+
+  function typeIntoComposer(text) {
+    return new Promise((resolve) => {
+      phEl.classList.add('typing');
+      phEl.textContent = '';
+      let i = 0;
+      const step = () => {
+        i += 1;
+        phEl.textContent = text.slice(0, i);
+        if (i >= text.length) {
+          typeTimer = setTimeout(resolve, 160);
+          return;
+        }
+        const ch = text[i - 1];
+        const delay = ch === ' ' ? 26 : (ch === '?' || ch === '.' ? 70 : 15 + (i % 3) * 3);
+        typeTimer = setTimeout(step, delay);
+      };
+      step();
+    });
+  }
+
+  function sendPulse() {
+    sendEl.classList.add('is-send');
+    setTimeout(() => sendEl.classList.remove('is-send'), 280);
+  }
+
+  function startPlay(idx) {
+    playGen += 1;
+    if (advanceTimer) { clearTimeout(advanceTimer); advanceTimer = null; }
+    if (typeTimer) { clearTimeout(typeTimer); typeTimer = null; }
+    playTurn(idx, playGen);
+  }
+
+  async function playTurn(idx, gen) {
+    turnIdx = ((idx % TURNS.length) + TURNS.length) % TURNS.length;
+    const t = TURNS[turnIdx];
+    const qPlain = plainText(t.q);
+    await typeIntoComposer(qPlain);
+    if (gen !== playGen) return;
+
+    sendPulse();
+    resetComposer();
+    appendUser(t.q, clockFor(turnIdx), true);
+    spawn(4);
+    await wait(420);
+    if (gen !== playGen) return;
+
+    appendBot(t, clockFor(turnIdx), true);
+    syncTypeql(t);
+    setInferred(!!t.ruleFires, { immediate: false });
+
+    await wait(CADENCE_MS);
+    if (gen !== playGen) return;
+    playTurn(turnIdx + 1, gen);
+  }
+
+  function renderTypeqlLines(lines) {
+    const escape = (s) => String(s);
+    let html = '';
+    let n = 1;
+    for (const parts of lines) {
+      let row = `<div><span class="ln">${n++}</span>`;
+      for (let i = 0; i < parts.length; i += 2) {
+        const kind = parts[i];
+        const text = escape(parts[i + 1] || '');
+        if (kind === 'raw') row += text;
+        else if (kind === 'cmt') row += `<span class="cmt">${text}</span>`;
+        else row += `<span class="${kind}">${text}</span>`;
+      }
+      row += '</div>';
+      html += row;
+    }
+    return html;
+  }
+
+  function syncTypeql(t) {
+    document.getElementById('typeqlPh').textContent = t.typeql.ph;
+    document.getElementById('typeqlCode').innerHTML = renderTypeqlLines(t.typeql.lines);
+    document.getElementById('typeqlOkText').textContent = t.typeql.ok;
+  }
+
+  function paintFrozenTurn() {
+    const t = TURNS[0];
+    appendUser(t.q, clockFor(0), false);
+    appendBot(t, clockFor(0), false);
+    phEl.classList.add('typing');
+    phEl.textContent = 'Which accounts share the owner';
+    syncTypeql(t);
+    setInferred(!!t.ruleFires, { immediate: true });
+  }
+
+  // --- Center graph (Pass A unlabeled) ---
+  const svg = document.getElementById('graphSvg');
+  const NS = 'http://www.w3.org/2000/svg';
+  const W = 400, H = 320;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+  let seed = 77;
+  function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+
+  const nodes = [];
+  for (let i = 0; i < 70; i++) {
+    nodes.push({
+      x: 18 + rnd() * (W - 36),
+      y: 40 + rnd() * (H - 56),
+      r: 1.4 + rnd() * 2.4
+    });
+  }
+  for (let i = 0; i < 28; i++) {
+    const a = rnd() * Math.PI * 2;
+    const rad = 20 + rnd() * 118;
+    nodes.push({
+      x: 210 + Math.cos(a) * rad * 1.1,
+      y: 168 + Math.sin(a) * rad * 0.85,
+      r: 1.5 + rnd() * 2.0
+    });
+  }
+
+  const gEdges = document.createElementNS(NS, 'g');
+  gEdges.setAttribute('stroke', '#4a4a52');
+  gEdges.setAttribute('stroke-width', '0.7');
+  gEdges.setAttribute('opacity', '0.7');
+  for (let i = 0; i < nodes.length; i++) {
+    let n = 0;
+    for (let j = i + 1; j < nodes.length && n < 3; j++) {
+      const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
+      const d = Math.hypot(dx, dy);
+      if (d < 58) {
+        const line = document.createElementNS(NS, 'line');
+        line.setAttribute('x1', nodes[i].x.toFixed(1));
+        line.setAttribute('y1', nodes[i].y.toFixed(1));
+        line.setAttribute('x2', nodes[j].x.toFixed(1));
+        line.setAttribute('y2', nodes[j].y.toFixed(1));
+        gEdges.appendChild(line);
+        n++;
+      }
+    }
+  }
+  svg.appendChild(gEdges);
+
+  const gNodes = document.createElementNS(NS, 'g');
+  gNodes.setAttribute('fill', '#b0b0b8');
+  nodes.forEach(p => {
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', p.x.toFixed(1));
+    c.setAttribute('cy', p.y.toFixed(1));
+    c.setAttribute('r', p.r.toFixed(2));
+    gNodes.appendChild(c);
+  });
+  svg.appendChild(gNodes);
+
+  // Interaction #2 (Lead alt) — stored-edge upgrade on is-structuring fire
+  // Quiet grey stored structure first. Rule proves edges → green dash upgrade
+  // + tiny centroid chip "derived" + soft seed glow. Never drawn by L→C ingest.
+  // Bounce: sequential typed reveal · constraint-flash-as-primary on graph.
+  const SEED = [
+    { x: 248, y: 206 },
+    { x: 302, y: 178 },
+    { x: 318, y: 228 },
+    { x: 272, y: 248 }
+  ];
+  const STORED = [
+    { id: 'e01', a: 0, b: 1, prove: 'strong' },
+    { id: 'e02', a: 0, b: 2, prove: 'strong' },
+    { id: 'e13', a: 1, b: 3, prove: 'soft' },
+    { id: 'e23', a: 2, b: 3, prove: null }
+  ];
+
+  const gStored = document.createElementNS(NS, 'g');
+  gStored.setAttribute('id', 'storedEdges');
+  gStored.setAttribute('stroke', '#5a5a64');
+  gStored.setAttribute('stroke-width', '1.15');
+  gStored.setAttribute('opacity', '0.55');
+  gStored.setAttribute('fill', 'none');
+  const storedEls = {};
+  STORED.forEach((e) => {
+    const line = document.createElementNS(NS, 'line');
+    line.setAttribute('id', e.id);
+    line.setAttribute('x1', SEED[e.a].x); line.setAttribute('y1', SEED[e.a].y);
+    line.setAttribute('x2', SEED[e.b].x); line.setAttribute('y2', SEED[e.b].y);
+    gStored.appendChild(line);
+    storedEls[e.id] = line;
+  });
+  svg.appendChild(gStored);
+
+  const gSeeds = document.createElementNS(NS, 'g');
+  gSeeds.setAttribute('id', 'seedNodes');
+  gSeeds.setAttribute('fill', '#9a9aa4');
+  SEED.forEach((p, i) => {
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', p.x); c.setAttribute('cy', p.y);
+    c.setAttribute('r', i === 0 ? 5.2 : (i === 3 ? 3.6 : 4.2));
+    gSeeds.appendChild(c);
+  });
+  svg.appendChild(gSeeds);
+
+  const gDerived = document.createElementNS(NS, 'g');
+  gDerived.setAttribute('id', 'derivedLayer');
+  gDerived.setAttribute('fill', 'none');
+  gDerived.style.opacity = '0';
+  gDerived.style.transition = 'opacity 0.5s ease';
+  STORED.filter(e => e.prove).forEach((e) => {
+    const line = document.createElementNS(NS, 'line');
+    line.setAttribute('data-for', e.id);
+    line.setAttribute('x1', SEED[e.a].x); line.setAttribute('y1', SEED[e.a].y);
+    line.setAttribute('x2', SEED[e.b].x); line.setAttribute('y2', SEED[e.b].y);
+    line.setAttribute('stroke', '#01E870');
+    if (e.prove === 'strong') {
+      line.setAttribute('stroke-width', '2');
+      line.setAttribute('stroke-dasharray', '5 4');
+      line.setAttribute('opacity', '0.95');
+    } else {
+      line.setAttribute('stroke-width', '1.4');
+      line.setAttribute('stroke-dasharray', '4 5');
+      line.setAttribute('opacity', '0.55');
+    }
+    gDerived.appendChild(line);
+  });
+  const cx = (SEED[0].x + SEED[1].x + SEED[2].x) / 3;
+  const cy = (SEED[0].y + SEED[1].y + SEED[2].y) / 3;
+  const chip = document.createElementNS(NS, 'g');
+  chip.setAttribute('transform', `translate(${cx.toFixed(1)} ${cy.toFixed(1)})`);
+  const rect = document.createElementNS(NS, 'rect');
+  rect.setAttribute('x', '-28'); rect.setAttribute('y', '-9');
+  rect.setAttribute('width', '56'); rect.setAttribute('height', '18');
+  rect.setAttribute('rx', '6');
+  rect.setAttribute('fill', '#0e0e10');
+  rect.setAttribute('stroke', '#01E870');
+  rect.setAttribute('stroke-width', '1');
+  chip.appendChild(rect);
+  const txt = document.createElementNS(NS, 'text');
+  txt.setAttribute('x', '0'); txt.setAttribute('y', '4');
+  txt.setAttribute('text-anchor', 'middle');
+  txt.setAttribute('font-family', 'Monaco, ui-monospace, monospace');
+  txt.setAttribute('font-size', '10');
+  txt.setAttribute('fill', '#01E870');
+  txt.textContent = 'derived';
+  chip.appendChild(txt);
+  gDerived.appendChild(chip);
+  svg.appendChild(gDerived);
+
+  const gGlow = document.createElementNS(NS, 'g');
+  gGlow.setAttribute('id', 'seedGlow');
+  gGlow.setAttribute('fill', '#01E870');
+  gGlow.style.opacity = '0';
+  gGlow.style.transition = 'opacity 0.45s ease';
+  ;[0,1,2].forEach((i) => {
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', SEED[i].x); c.setAttribute('cy', SEED[i].y);
+    c.setAttribute('r', i === 0 ? 6.2 : 5);
+    c.setAttribute('opacity', i === 0 ? '0.85' : '0.75');
+    gGlow.appendChild(c);
+  });
+  svg.appendChild(gGlow);
+
+  let inferTimer = null;
+  function setInferred(on, { immediate = false } = {}) {
+    if (inferTimer) { clearTimeout(inferTimer); inferTimer = null; }
+    const apply = () => {
+      if (FREEZE) {
+        gDerived.style.transition = 'none';
+        gGlow.style.transition = 'none';
+      }
+      gDerived.style.opacity = on ? '1' : '0';
+      gGlow.style.opacity = on ? '1' : '0';
+    };
+    if (immediate || FREEZE) apply();
+    else if (on) inferTimer = setTimeout(apply, 280);
+    else apply();
+  }
+
+  const connectors = document.getElementById('connectors');
+  const pathLayer = document.getElementById('pathLayer');
+  const packetsG = document.getElementById('packets');
+  const row = document.getElementById('row');
+
+  function relPoint(el) {
+    const rr = row.getBoundingClientRect();
+    const r = el.getBoundingClientRect();
+    return {
+      x: r.left + r.width / 2 - rr.left,
+      y: r.top + r.height / 2 - rr.top
+    };
+  }
+
+  function buildPaths() {
+    pathLayer.innerHTML = '';
+    const liveAnchors = [...document.querySelectorAll('[data-anchor^="live-"]')];
+    const mgIn = document.querySelector('[data-anchor="memgraph-in"]');
+    const mgOut = document.querySelector('[data-anchor="memgraph-out"]');
+    const chatIn = document.querySelector('[data-anchor="chat-in"]');
+    const inPt = relPoint(mgIn);
+    const outPt = relPoint(mgOut);
+    const chatPt = relPoint(chatIn);
+
+    const paths = [];
+    const entryYs = [inPt.y - 36, inPt.y, inPt.y + 36];
+    liveAnchors.forEach((a, i) => {
+      const s = relPoint(a);
+      const ey = entryYs[i] ?? inPt.y;
+      const midX = s.x + (inPt.x - s.x) * 0.42;
+      const d = `M ${s.x.toFixed(1)} ${s.y.toFixed(1)} L ${midX.toFixed(1)} ${s.y.toFixed(1)} Q ${midX.toFixed(1)} ${ey.toFixed(1)} ${(midX + 18).toFixed(1)} ${ey.toFixed(1)} L ${inPt.x.toFixed(1)} ${ey.toFixed(1)}`;
+      const path = document.createElementNS(NS, 'path');
+      path.setAttribute('id', 'p' + i);
+      path.setAttribute('d', d);
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke', '#5c5c6c');
+      path.setAttribute('stroke-width', '1');
+      path.setAttribute('stroke-dasharray', '4 4');
+      path.setAttribute('marker-end', 'url(#diagram-arrow)');
+      pathLayer.appendChild(path);
+      paths.push(path);
+    });
+
+    const pGC = document.createElementNS(NS, 'path');
+    pGC.setAttribute('id', 'p3');
+    pGC.setAttribute('d', `M ${outPt.x.toFixed(1)} ${(outPt.y - 14).toFixed(1)} L ${chatPt.x.toFixed(1)} ${(chatPt.y - 14).toFixed(1)}`);
+    pGC.setAttribute('fill', 'none');
+    pGC.setAttribute('stroke', '#5c5c6c');
+    pGC.setAttribute('stroke-width', '1');
+    pGC.setAttribute('stroke-dasharray', '4 4');
+    pGC.setAttribute('marker-end', 'url(#diagram-arrow)');
+    pathLayer.appendChild(pGC);
+    paths.push(pGC);
+
+    const pCG = document.createElementNS(NS, 'path');
+    pCG.setAttribute('id', 'p4');
+    pCG.setAttribute('d', `M ${chatPt.x.toFixed(1)} ${(chatPt.y + 14).toFixed(1)} L ${outPt.x.toFixed(1)} ${(outPt.y + 14).toFixed(1)}`);
+    pCG.setAttribute('fill', 'none');
+    pCG.setAttribute('stroke', '#5c5c6c');
+    pCG.setAttribute('stroke-width', '1');
+    pCG.setAttribute('stroke-dasharray', '4 4');
+    pCG.setAttribute('marker-end', 'url(#diagram-arrow)');
+    pathLayer.appendChild(pCG);
+    paths.push(pCG);
+
+    return paths.map(el => ({ el, len: el.getTotalLength() }));
+  }
+
+  const pathMeta = buildPaths();
+  const LIVE_PATH_COUNT = 3;
+  const fireOrder = [0, 1, 2, 3, 4];
+  const SPEED = 0.12;
+  const INTERVAL = 1250;
+  const active = [];
+
+  function spawn(pathIndex) {
+    if (pathIndex >= pathMeta.length) return;
+    const brandReturn = pathIndex === 4;
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('r', brandReturn ? '3.4' : '3');
+    c.setAttribute('fill', brandReturn ? '#01E870' : '#e8e8ee');
+    c.style.filter = brandReturn
+      ? 'drop-shadow(0 0 4px rgba(1,232,112,0.95)) drop-shadow(0 0 10px rgba(1,232,112,0.55))'
+      : 'drop-shadow(0 0 3px rgba(255,255,255,0.9)) drop-shadow(0 0 7px rgba(1,232,112,0.45))';
+    packetsG.appendChild(c);
+    active.push({ el: c, pathIndex, dist: 0, done: false });
+  }
+
+  function flashBadge() {
+    const el = document.getElementById('statusBadge');
+    if (!el || FREEZE) return;
+    el.style.boxShadow = '0 0 22px rgba(1,232,112,0.55)';
+    el.style.borderColor = 'rgba(1,232,112,1)';
+    setTimeout(() => {
+      el.style.boxShadow = '';
+      el.style.borderColor = '';
+    }, 420);
+  }
+
+  function reportHeight() {
+    const stage = document.getElementById('shot');
+    if (!stage || window.parent === window) return;
+    const h = Math.ceil(stage.getBoundingClientRect().height);
+    if (h > 400) {
+      window.parent.postMessage({ type: 'typedb-passb-height', height: h }, '*');
+    }
+  }
+  reportHeight();
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(reportHeight).observe(document.getElementById('shot'));
+  }
+  window.addEventListener('resize', reportHeight);
+
+  if (FREEZE) {
+    paintFrozenTurn();
+    [[0, 0.55, false], [1, 0.72, false], [2, 0.40, false], [3, 0.48, false], [4, 0.52, true]].forEach(([idx, frac, brand]) => {
+      const meta = pathMeta[idx];
+      if (!meta) return;
+      const pt = meta.el.getPointAtLength(meta.len * frac);
+      const c = document.createElementNS(NS, 'circle');
+      c.setAttribute('r', brand ? '3.4' : '3');
+      c.setAttribute('fill', brand ? '#01E870' : '#e8e8ee');
+      c.setAttribute('cx', pt.x); c.setAttribute('cy', pt.y);
+      c.style.filter = brand
+        ? 'drop-shadow(0 0 4px rgba(1,232,112,0.95)) drop-shadow(0 0 10px rgba(1,232,112,0.55))'
+        : 'drop-shadow(0 0 3px rgba(255,255,255,0.9)) drop-shadow(0 0 7px rgba(1,232,112,0.45))';
+      packetsG.appendChild(c);
+    });
+    return;
+  }
+
+  startPlay(0);
+
+  let last = performance.now();
+  let fireAcc = 0;
+  let fireIdx = 0;
+
+  function tick(now) {
+    const dt = Math.min(40, now - last);
+    last = now;
+    fireAcc += dt;
+    while (fireAcc >= INTERVAL) {
+      fireAcc -= INTERVAL;
+      const pathIndex = fireOrder[fireIdx % fireOrder.length];
+      spawn(pathIndex);
+      fireIdx++;
+      flashBadge();
+    }
+    for (const p of active) {
+      if (p.done) continue;
+      p.dist += SPEED * dt;
+      const meta = pathMeta[p.pathIndex];
+      if (!meta || p.dist >= meta.len) { p.done = true; p.el.remove(); continue; }
+      const pt = meta.el.getPointAtLength(p.dist);
+      p.el.setAttribute('cx', pt.x); p.el.setAttribute('cy', pt.y);
+    }
+    for (let i = active.length - 1; i >= 0; i--) if (active[i].done) active.splice(i, 1);
+    requestAnimationFrame(tick);
+  }
+  spawn(0); spawn(1); spawn(2); spawn(4);
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
