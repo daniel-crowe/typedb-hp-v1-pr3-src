@@ -930,16 +930,17 @@
   // + tiny centroid chip "derived" + soft seed glow. Never drawn by L→C ingest.
   // Bounce: sequential typed reveal · constraint-flash-as-primary on graph.
   const SEED = [
-    { x: 248, y: 206 },
-    { x: 302, y: 178 },
-    { x: 318, y: 228 },
-    { x: 272, y: 248 }
+    { x: 248, y: 206 }, // ACC-7834 locus
+    { x: 302, y: 178 }, // ACC-9102
+    { x: 318, y: 228 }, // ACC-4421
+    { x: 272, y: 248 }  // quiet linked locus
   ];
+  // Ingest-visible stored structure — solid muted grey
   const STORED = [
-    { id: 'e01', a: 0, b: 1, prove: 'strong' },
-    { id: 'e02', a: 0, b: 2, prove: 'strong' },
-    { id: 'e13', a: 1, b: 3, prove: 'soft' },
-    { id: 'e23', a: 2, b: 3, prove: null }
+    { id: 'e01', a: 0, b: 1, prove: 'strong' }, // proved by rule
+    { id: 'e02', a: 0, b: 2, prove: 'strong' }, // proved by rule
+    { id: 'e13', a: 1, b: 3, prove: 'soft' },   // supporting
+    { id: 'e23', a: 2, b: 3, prove: null }       // stays grey (not upgraded)
   ];
 
   const gStored = document.createElementNS(NS, 'g');
@@ -970,6 +971,7 @@
   });
   svg.appendChild(gSeeds);
 
+  // Derived upgrade layer (off until fire) — green dash ON proved stored edges
   const gDerived = document.createElementNS(NS, 'g');
   gDerived.setAttribute('id', 'derivedLayer');
   gDerived.setAttribute('fill', 'none');
@@ -992,6 +994,7 @@
     }
     gDerived.appendChild(line);
   });
+  // Tiny centroid chip "derived"
   const cx = (SEED[0].x + SEED[1].x + SEED[2].x) / 3;
   const cy = (SEED[0].y + SEED[1].y + SEED[2].y) / 3;
   const chip = document.createElementNS(NS, 'g');
@@ -1015,6 +1018,7 @@
   gDerived.appendChild(chip);
   svg.appendChild(gDerived);
 
+  // Soft seed glow only while derived on (seeds themselves stay grey in base layer)
   const gGlow = document.createElementNS(NS, 'g');
   gGlow.setAttribute('id', 'seedGlow');
   gGlow.setAttribute('fill', '#01E870');
@@ -1045,6 +1049,7 @@
     else apply();
   }
 
+  // --- Connectors: only LIVE pills → graph (+ graph ↔ chat) ---
   const connectors = document.getElementById('connectors');
   const pathLayer = document.getElementById('pathLayer');
   const packetsG = document.getElementById('packets');
@@ -1070,6 +1075,7 @@
     const chatPt = relPoint(chatIn);
 
     const paths = [];
+    // stagger entry Y on graph left edge for the 3 LIVE feeds
     const entryYs = [inPt.y - 36, inPt.y, inPt.y + 36];
     liveAnchors.forEach((a, i) => {
       const s = relPoint(a);
@@ -1088,6 +1094,7 @@
       paths.push(path);
     });
 
+    // graph → chat
     const pGC = document.createElementNS(NS, 'path');
     pGC.setAttribute('id', 'p3');
     pGC.setAttribute('d', `M ${outPt.x.toFixed(1)} ${(outPt.y - 14).toFixed(1)} L ${chatPt.x.toFixed(1)} ${(chatPt.y - 14).toFixed(1)}`);
@@ -1099,6 +1106,7 @@
     pathLayer.appendChild(pGC);
     paths.push(pGC);
 
+    // chat → graph (subtle return)
     const pCG = document.createElementNS(NS, 'path');
     pCG.setAttribute('id', 'p4');
     pCG.setAttribute('d', `M ${chatPt.x.toFixed(1)} ${(chatPt.y + 14).toFixed(1)} L ${outPt.x.toFixed(1)} ${(outPt.y + 14).toFixed(1)}`);
@@ -1114,8 +1122,9 @@
   }
 
   const pathMeta = buildPaths();
+  // Only LIVE feed paths (0,1,2) fire packets into the graph; also allow graph↔chat (3,4)
   const LIVE_PATH_COUNT = 3;
-  const fireOrder = [0, 1, 2, 3, 4];
+  const fireOrder = [0, 1, 2, 3, 4]; // 3 LIVE feeds + graph→chat + chat→graph
   const SPEED = 0.12;
   const INTERVAL = 1250;
   const active = [];
@@ -1160,6 +1169,7 @@
 
   if (FREEZE) {
     paintFrozenTurn();
+    // Static packets on LIVE feeds, graph→chat, and brand-green chat→graph
     [[0, 0.55, false], [1, 0.72, false], [2, 0.40, false], [3, 0.48, false], [4, 0.52, true]].forEach(([idx, frac, brand]) => {
       const meta = pathMeta[idx];
       if (!meta) return;
@@ -1189,6 +1199,7 @@
     while (fireAcc >= INTERVAL) {
       fireAcc -= INTERVAL;
       const pathIndex = fireOrder[fireIdx % fireOrder.length];
+      // Guard: never spawn from idle-pill indices (only 0..LIVE_PATH_COUNT-1 for feeds)
       spawn(pathIndex);
       fireIdx++;
       flashBadge();
