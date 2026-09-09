@@ -1,0 +1,110 @@
+/* Daniel marks on PR3 — last-loaded so lock.css does not win. */
+
+#ai-systems.section-proof:has(.passb-iframe-wrap) {
+  padding-top: 36px;
+}
+
+.passb-iframe-wrap {
+  margin-top: 0;
+}
+
+.ai-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0 0 40px;
+  padding: 0;
+  list-style: none;
+}
+
+.ai-pillars li {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 14px;
+  min-height: 100%;
+  padding: 22px 20px 20px;
+  border: 1px solid var(--raised);
+  border-radius: 8px;
+  background: #12101d;
+}
+
+.ai-pillars span {
+  color: #01e870;
+  font-family: var(--font-family-code);
+  font-size: 13px;
+}
+
+.ai-pillars h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.ai-pillars p {
+  margin: 0;
+  max-width: none;
+  color: var(--mute);
+  font-size: 15px;
+}
+
+.audit-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  margin: 36px 0 0;
+  padding: 28px 0;
+  border-block: 1px solid color-mix(in srgb, #01e870 32%, #2a2a36);
+}
+
+.audit-metrics div {
+  padding: 0 16px;
+  text-align: center;
+}
+
+.audit-metrics dt {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(22px, 2.5vw, 32px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.audit-metrics dd {
+  margin: 8px 0 0;
+  color: var(--mute-2);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+#suite.section-proof {
+  background: transparent;
+  border-block: none;
+}
+
+#neo4j.section-proof {
+  background: var(--deep);
+  border-block: 1px solid var(--line);
+}
+
+@media (max-width: 900px) {
+  .ai-pillars,
+  .audit-metrics {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .audit-metrics {
+    padding: 8px 0;
+    border-block: 0;
+  }
+
+  .audit-metrics div {
+    padding: 18px 0;
+    border-top: 1px solid color-mix(in srgb, #01e870 32%, #2a2a36);
+  }
+
+  .audit-metrics div:last-child {
+    border-bottom: 1px solid color-mix(in srgb, #01e870 32%, #2a2a36);
+  }
+}

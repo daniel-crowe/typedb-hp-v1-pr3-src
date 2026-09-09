@@ -8,6 +8,7 @@ import "./fonts.css";
 import "./globals.css";
 import "./lock.css";
 import "./lock-fold.css";
+import "./marks.css";
 
 export const metadata: Metadata = {
   title: copy.meta.title,
