@@ -6,6 +6,22 @@
 
 .passb-iframe-wrap {
   margin-top: 0;
+  overflow: hidden;
+}
+
+.passb-iframe {
+  display: block;
+  width: 100%;
+  height: 920px;
+  border: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+@media (max-width: 768px) {
+  .passb-iframe {
+    height: 980px;
+  }
 }
 
 .ai-pillars {
