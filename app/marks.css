@@ -77,6 +77,11 @@
   line-height: 1.35;
 }
 
+.section-proof {
+  background: transparent;
+  border-block: none;
+}
+
 #suite.section-proof {
   background: transparent;
   border-block: none;
