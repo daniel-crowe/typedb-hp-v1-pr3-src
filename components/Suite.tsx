@@ -44,6 +44,7 @@ export function Suite() {
   return (
     <section className="section section-proof" id="suite" data-suite="row-v2">
       <div className="wrap">
+        <p className="eyebrow">{copy.s5.kicker}</p>
         <h2 className="section-title">{copy.s5.h2}</h2>
         <p className="lede">{copy.s5.lede}</p>
         <div className="suite-board is-products">

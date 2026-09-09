@@ -1,10 +1,10 @@
 import { copy } from "@/lib/copy";
-import { HeroPipeline } from "./HeroPipeline";
 
 export function Hero() {
   return (
-    <section className="hero wrap" id="top" data-hero-mobile="v1">
+    <section className="hero wrap is-pack" id="top" data-hero-mobile="v1">
       <div className="hero-copy">
+        <p className="eyebrow">{copy.hero.kicker}</p>
         <h1>{copy.hero.h1}</h1>
         <p className="hero-sub">{copy.hero.sub}</p>
         <div className="hero-actions">
@@ -16,7 +16,6 @@ export function Hero() {
           </a>
         </div>
       </div>
-      <HeroPipeline />
     </section>
   );
 }

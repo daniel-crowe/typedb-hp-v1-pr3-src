@@ -2,7 +2,7 @@ import { urls } from "./urls";
 
 export const copy = {
   meta: {
-    title: "TypeDB — A knowledge graph your AI can reason over",
+    title: "TypeDB — The Knowledge Engine for AI Reasoning",
     description:
       "Ground your AI in a typed knowledge graph that encodes your domain, enforces its rules, and lets systems reason over facts instead of loose text.",
   },
@@ -15,15 +15,17 @@ export const copy = {
       { label: "Blog", href: urls.blog },
       { label: "GitHub", href: urls.github },
     ],
-    primary: { label: "Download", href: urls.install },
+    primary: { label: "Try Cloud", href: urls.cloud },
   },
   hero: {
-    h1: "A knowledge graph your AI can reason over",
+    kicker: "Knowledge Engine",
+    h1: "The Knowledge Engine for AI Reasoning",
     sub: "Ground your AI in a typed knowledge graph that encodes your domain, enforces its rules, and lets systems reason over facts instead of loose text.",
     primary: { label: "Try Cloud", href: urls.cloud },
-    secondary: { label: "Explore docs", href: urls.docs },
+    secondary: { label: "Docs", href: urls.docs },
   },
   ai: {
+    kicker: "AI Systems",
     h2: "Connected context across your data",
     pillars: [
       {
@@ -44,9 +46,12 @@ export const copy = {
     ],
     auditH3: "Auditability as structure.",
     auditBody:
-      "When an AI system answers a question or triggers an action on top of TypeDB, it does so over an explicit network of entities, relations, and rules. The reasoning path is stored as data: which facts were used, which rules fired, and how intermediate conclusions were derived. Alternative hypotheses can be compared, challenged, and re-run. The basis for any decision is examinable in terms of schema, constraints, and logical steps, not just token probabilities or embedding distances.",
+      "When an AI system answers a question or triggers an action on top of TypeDB, it does so over an explicit network of entities, relations, and rules. The reasoning path is stored as data: which facts were used, which rules fired, and how intermediate conclusions were derived.",
+    auditBody2:
+      "Alternative hypotheses can be compared, challenged, and re-run. The basis for any decision is examinable in terms of schema, constraints, and logical steps, not just token probabilities or embedding distances.",
   },
   analytics: {
+    kicker: "Knowledge Graph Analytics",
     h2: "One database. Native reasoning across workloads.",
     lede: "The same reasoning engine that guides AI systems also drives knowledge graph analytics.",
     cards: [
@@ -55,8 +60,8 @@ export const copy = {
         index: "01",
         title: "Life sciences & research",
         body: "Model biology, compounds, and clinical evidence as a unified knowledge graph. Let inference surface non-obvious mechanisms, repurposing opportunities, and safety risks across your R&D pipeline.",
-        href: undefined,
-        hrefLabel: "Life sciences",
+        href: "#",
+        hrefLabel: "Read more",
       },
       {
         id: "financial-crime",
@@ -64,7 +69,7 @@ export const copy = {
         title: "Financial crime & risk",
         body: "Capture complex ownership structures, transactions, and risk signals as typed relations. Use rules to codify regulatory logic and expose higher-order patterns that simple link analysis misses.",
         href: urls.financialIntel,
-        hrefLabel: "Financial intelligence",
+        hrefLabel: "Read more",
       },
       {
         id: "cti",
@@ -72,15 +77,15 @@ export const copy = {
         title: "Cyber threat intelligence",
         body: "Represent actors, indicators, campaigns, and TTPs in one graph. Inference connects partial observations into coherent hypotheses, helping analysts move from isolated alerts to explainable threat stories.",
         href: urls.cti,
-        hrefLabel: "Cyber threat intelligence",
+        hrefLabel: "Read more",
       },
       {
         id: "industrial",
         index: "04",
         title: "Industrial & IoT systems",
         body: "Unify assets, telemetry, maintenance, and process models. Use TypeDB to reason over dependencies, impact paths, and failure modes across large, heterogeneous environments.",
-        href: undefined,
-        hrefLabel: "Industrial",
+        href: "#",
+        hrefLabel: "Read more",
       },
       {
         id: "lineage",
@@ -88,7 +93,7 @@ export const copy = {
         title: "Data lineage & governance",
         body: "Track how data is produced, transformed, combined, and consumed across your stack. Typed relations and rules enforce policies and help auditors trace every decision back to its sources.",
         href: urls.dataLineage,
-        hrefLabel: "Data lineage",
+        hrefLabel: "Read more",
       },
       {
         id: "enterprise-kg",
@@ -96,7 +101,7 @@ export const copy = {
         title: "Enterprise knowledge graph",
         body: "Build a single, consistent knowledge backbone that connects products, customers, contracts, and processes. Power search, analytics, and AI from one governed source of truth.",
         href: urls.knowledgeGraphs,
-        hrefLabel: "Knowledge graphs",
+        hrefLabel: "Read more",
       },
     ],
   },
@@ -104,7 +109,7 @@ export const copy = {
     question: "Migrating from Neo4j?",
     body: "Level up with schema, semantics, and native inference.",
     href: urls.graphDocs,
-    hrefLabel: "Graph model in TypeDB",
+    hrefLabel: "Explore the docs",
   },
   s1: {
     h2: "Context infrastructure",
@@ -246,6 +251,7 @@ export const copy = {
     marks: ["Structure", "enforced", "suggestion"],
   },
   s5: {
+    kicker: "Suite",
     h2: "TypeDB suite",
     lede: "Database, Cloud, Studio, and TypeQL.",
     products: [
