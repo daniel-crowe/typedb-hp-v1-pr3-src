@@ -136,9 +136,9 @@
   .feed-pill:not(.live) .ftag { display: none; }
   .anchor { position: absolute; width: 0; height: 0; }
   .anchor-pill-out { right: 0; top: 50%; transform: translateY(-50%); }
-  .anchor-mg-in { left: 0; top: 50%; transform: translateY(-50%); }
-  .anchor-mg-out { right: 0; top: 50%; transform: translateY(-50%); }
-  .anchor-query-dock { right: 0; top: 55%; }
+  .anchor-mg-in { left: 16%; top: 50%; transform: translateY(-50%); }
+  .anchor-mg-out { right: 16%; top: 42%; transform: translateY(-50%); }
+  .anchor-query-dock { left: 64%; top: 64%; }
   .anchor-chat-in { left: 0; top: 50%; transform: translateY(-50%); }
 
   .mid {
@@ -1130,7 +1130,7 @@
     pathLayer.appendChild(pGC);
     paths.push(pGC);
 
-    // query flight: chat → memgraph panel edge (page.js xl: side right, at .55)
+    // query flight: chat → in-dock INSIDE the mesh (past the TYPEDB border)
     const pCG = document.createElementNS(NS, 'path');
     pCG.setAttribute('id', 'p4');
     pCG.setAttribute('data-flight', 'query');
