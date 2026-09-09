@@ -13,6 +13,12 @@ export const urls = {
   editions: "https://typedb.com/editions",
   agentic: "https://typedb.com/use-cases/agentic-systems",
   cti: "https://typedb.com/use-cases/cyber-threat-intelligence",
+  // GAP: typedb.com/use-cases/life-sciences 404 (2026-09-09). Do not invent a page.
+  financialIntel: "https://typedb.com/use-cases/financial-intelligence",
+  // GAP: typedb.com/use-cases/industrial 404 (2026-09-09). Do not invent a page.
+  dataLineage: "https://typedb.com/use-cases/lineage",
+  knowledgeGraphs: "https://typedb.com/use-cases/knowledge-graphs",
+  graphDocs: "https://typedb.com/docs/use-cases/graph/",
   originRepo: "https://github.com/originsciences/epigraph",
   brgmBlog: "https://typedb.com/blog/from-geoscience-to-decision-making",
   useCasesIndex: "https://typedb.com/docs/use-cases",

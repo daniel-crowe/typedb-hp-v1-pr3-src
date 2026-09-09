@@ -1,13 +1,9 @@
-import { CloseCta } from "@/components/CloseCta";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
-import { Industries } from "@/components/Industries";
-import { Insight } from "@/components/Insight";
-import { Jobs } from "@/components/Jobs";
-import { Meaning } from "@/components/Meaning";
-import { Metrics } from "@/components/Metrics";
-import { StackFit } from "@/components/StackFit";
+import { AiSystems } from "@/components/AiSystems";
+import { Analytics } from "@/components/Analytics";
+import { Neo4jStrip } from "@/components/Neo4jStrip";
 import { StartPath } from "@/components/StartPath";
 import { Suite } from "@/components/Suite";
 
@@ -17,15 +13,11 @@ export default async function Home() {
       <Header />
       <main>
         <Hero />
-        <StackFit />
-        <Meaning />
-        <Jobs />
-        <Insight />
+        <AiSystems />
+        <Analytics />
+        <Neo4jStrip />
         <Suite />
         <StartPath />
-        <Metrics />
-        <Industries />
-        <CloseCta />
       </main>
       <Footer />
     </>

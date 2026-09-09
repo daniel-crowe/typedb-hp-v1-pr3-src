@@ -2,7 +2,7 @@ import { copy } from "@/lib/copy";
 
 export function StartPath() {
   return (
-    <section className="section" id="start">
+    <section className="section" id="developers" data-developers="v1">
       <div className="wrap">
         <h2 className="section-title">{copy.s6.h2}</h2>
         <p className="lede">{copy.s6.lede}</p>
