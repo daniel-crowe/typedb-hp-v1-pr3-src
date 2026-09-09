@@ -2,9 +2,9 @@ import { urls } from "./urls";
 
 export const copy = {
   meta: {
-    title: "TypeDB — a knowledge graph your AI can reason over",
+    title: "TypeDB — A knowledge graph your AI can reason over",
     description:
-      "TypeDB holds and enforces domain meaning in the database. AI gets one world to reason over.",
+      "Ground your AI in a typed knowledge graph that encodes your domain, enforces its rules, and lets systems reason over facts instead of loose text.",
   },
   header: {
     links: [
@@ -19,9 +19,92 @@ export const copy = {
   },
   hero: {
     h1: "A knowledge graph your AI can reason over",
-    sub: "AI cannot reason over a world the organization has not fixed in one place. Today that world is scattered across docs, prompts, and application code. With TypeDB, the database holds and enforces domain meaning, giving agents a source of truth leading to a deeper understanding and more token efficient workflows.",
+    sub: "Ground your AI in a typed knowledge graph that encodes your domain, enforces its rules, and lets systems reason over facts instead of loose text.",
     primary: { label: "Try Cloud", href: urls.cloud },
     secondary: { label: "Explore docs", href: urls.docs },
+  },
+  ai: {
+    h2: "Connected context across your data",
+    pillars: [
+      {
+        index: "01",
+        title: "Semantic Knowledge Graphs",
+        body: "Standard graphs store untyped nodes and edges. TypeDB models entities, relations, and roles with a rich type system, so your knowledge graph matches the real structure of your domain instead of a generic property bag.",
+      },
+      {
+        index: "02",
+        title: "Logical Inference",
+        body: "Most databases only return what you inserted. TypeDB adds a logical layer: rules and constraints that infer new facts, uncover hidden relationships, and continuously validate your data against the semantics of your schema.",
+      },
+      {
+        index: "03",
+        title: "Explainable AI",
+        body: "LLMs and vector search offer powerful pattern matching, but weak guarantees. With TypeDB, every conclusion is backed by an explicit chain of entities, relations, and rules — giving you an inspectable reasoning trace for every answer.",
+      },
+    ],
+    auditH3: "Auditability as structure.",
+    auditBody:
+      "When an AI system answers a question or triggers an action on top of TypeDB, it does so over an explicit network of entities, relations, and rules. The reasoning path is stored as data: which facts were used, which rules fired, and how intermediate conclusions were derived. Alternative hypotheses can be compared, challenged, and re-run. The basis for any decision is examinable in terms of schema, constraints, and logical steps, not just token probabilities or embedding distances.",
+  },
+  analytics: {
+    h2: "One database. Native reasoning across workloads.",
+    lede: "The same reasoning engine that guides AI systems also drives knowledge graph analytics.",
+    cards: [
+      {
+        id: "life-sciences",
+        index: "01",
+        title: "Life sciences & research",
+        body: "Model biology, compounds, and clinical evidence as a unified knowledge graph. Let inference surface non-obvious mechanisms, repurposing opportunities, and safety risks across your R&D pipeline.",
+        href: undefined,
+        hrefLabel: "Life sciences",
+      },
+      {
+        id: "financial-crime",
+        index: "02",
+        title: "Financial crime & risk",
+        body: "Capture complex ownership structures, transactions, and risk signals as typed relations. Use rules to codify regulatory logic and expose higher-order patterns that simple link analysis misses.",
+        href: urls.financialIntel,
+        hrefLabel: "Financial intelligence",
+      },
+      {
+        id: "cti",
+        index: "03",
+        title: "Cyber threat intelligence",
+        body: "Represent actors, indicators, campaigns, and TTPs in one graph. Inference connects partial observations into coherent hypotheses, helping analysts move from isolated alerts to explainable threat stories.",
+        href: urls.cti,
+        hrefLabel: "Cyber threat intelligence",
+      },
+      {
+        id: "industrial",
+        index: "04",
+        title: "Industrial & IoT systems",
+        body: "Unify assets, telemetry, maintenance, and process models. Use TypeDB to reason over dependencies, impact paths, and failure modes across large, heterogeneous environments.",
+        href: undefined,
+        hrefLabel: "Industrial",
+      },
+      {
+        id: "lineage",
+        index: "05",
+        title: "Data lineage & governance",
+        body: "Track how data is produced, transformed, combined, and consumed across your stack. Typed relations and rules enforce policies and help auditors trace every decision back to its sources.",
+        href: urls.dataLineage,
+        hrefLabel: "Data lineage",
+      },
+      {
+        id: "enterprise-kg",
+        index: "06",
+        title: "Enterprise knowledge graph",
+        body: "Build a single, consistent knowledge backbone that connects products, customers, contracts, and processes. Power search, analytics, and AI from one governed source of truth.",
+        href: urls.knowledgeGraphs,
+        hrefLabel: "Knowledge graphs",
+      },
+    ],
+  },
+  neo4j: {
+    question: "Migrating from Neo4j?",
+    body: "Level up with schema, semantics, and native inference.",
+    href: urls.graphDocs,
+    hrefLabel: "Graph model in TypeDB",
   },
   s1: {
     h2: "Context infrastructure",
@@ -163,12 +246,12 @@ export const copy = {
     marks: ["Structure", "enforced", "suggestion"],
   },
   s5: {
-    h2: "The TypeDB suite",
-    lede: "One schema. Four ways to run it. Community Edition and Enterprise share the engine.",
+    h2: "TypeDB suite",
+    lede: "Database, Cloud, Studio, and TypeQL.",
     products: [
       {
         id: "database",
-        label: "TypeDB",
+        label: "Database",
         title: "The database",
         body: "The engine holds the schema. Relations have named roles. A fact can connect more than two things. Schema is enforced on write.",
         href: urls.install,
@@ -176,7 +259,7 @@ export const copy = {
       },
       {
         id: "cloud",
-        label: "TypeDB Cloud",
+        label: "Cloud",
         title: "Managed TypeDB",
         body: "Fully managed TypeDB on AWS or GCP. Open an instance and work the same schema.",
         href: urls.cloud,
@@ -184,7 +267,7 @@ export const copy = {
       },
       {
         id: "studio",
-        label: "TypeDB Studio",
+        label: "Studio",
         title: "Web and desktop environment",
         body: "Studio is the official environment on that database. Define types and run TypeQL against the live schema.",
         href: urls.studio,
@@ -209,8 +292,8 @@ export const copy = {
   repository plays resource-ownership:resource;`,
   },
   s6: {
-    h2: "Get running",
-    lede: "Three paths. Cloud is managed. Install is Community Edition on your machine. Docs are the schema and TypeQL first.",
+    h2: "For Developers",
+    lede: "Start in minutes. Community Edition is fully featured, free forever.",
     steps: [
       {
         n: "01",

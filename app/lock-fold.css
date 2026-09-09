@@ -169,3 +169,249 @@ html[data-freeze="1"] .meaning-pipeline[data-motion="meaning-motion-v1"] .typed-
     filter: drop-shadow(0 0 10px color-mix(in srgb, #01e870 70%, transparent));
   }
 }
+
+
+/* Face lock: system UI, Monaco stays on code */
+:root {
+  --font-family-default: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+
+/* Memgraph-10% wire: pass-b-chat-v4.1 + analytics six + suite H2 lock */
+
+.hero h1 {
+  max-width: 18ch;
+}
+
+.passb-instrument {
+  margin: 28px 0 40px;
+  padding: 18px 16px 16px;
+  border: 1px solid color-mix(in srgb, #01e870 22%, var(--raised));
+  border-radius: 10px;
+  background: #12101d;
+}
+
+.passb-feeds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.passb-feed {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  border: 1px solid var(--raised);
+  border-radius: 999px;
+  background: #0e0e0e;
+  color: var(--mute-2);
+  font-family: var(--font-family-code);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+}
+
+.passb-feed.is-live {
+  border-color: color-mix(in srgb, #01e870 45%, var(--raised));
+  color: var(--ink);
+}
+
+.passb-feed.is-live i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #01e870;
+  box-shadow: 0 0 8px #01e870;
+}
+
+.passb-feeds-lines {
+  display: block;
+  width: 100%;
+  height: 28px;
+  margin: 10px 0 8px;
+}
+
+.passb-turns {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+}
+
+.passb-turns li {
+  padding: 8px 0;
+  border: 1px solid var(--raised);
+  border-radius: 4px;
+  color: var(--mute-2);
+  font-family: var(--font-family-code);
+  font-size: 11px;
+  text-align: center;
+}
+
+.passb-turns li.is-on {
+  border-color: #01e870;
+  color: #01e870;
+}
+
+.passb-stage {
+  min-height: 220px;
+  padding: 12px;
+  border: 1px solid var(--raised);
+  border-radius: 8px;
+  background: #0c0b14;
+}
+
+.passb-kicker {
+  margin: 0 0 8px;
+  color: #01e870;
+  font-family: var(--font-family-code);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.passb-stage-title {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.passb-stage p {
+  margin: 0;
+  color: var(--mute);
+}
+
+.passb-edge {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.passb-edge-note {
+  fill: var(--mute-2);
+  font-family: var(--font-family-code);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
+.passb-instrument figcaption {
+  margin: 12px 0 0;
+  color: var(--mute);
+  font-size: 13px;
+}
+
+.ai-pillars {
+  display: grid;
+  gap: 22px;
+  margin: 0 0 40px;
+  padding: 0;
+  list-style: none;
+}
+
+.ai-pillars li {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 14px;
+}
+
+.ai-pillars span {
+  color: #01e870;
+  font-family: var(--font-family-code);
+  font-size: 13px;
+}
+
+.ai-pillars h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.ai-pillars p {
+  margin: 0;
+  max-width: 68ch;
+  color: var(--mute);
+}
+
+.ai-audit-title {
+  margin: 0 0 12px;
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 500;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 36px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.analytics-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 22px 20px 20px;
+  border: 1px solid var(--raised);
+  border-radius: 8px;
+  background: #12101d;
+}
+
+.analytics-card span {
+  color: #01e870;
+  font-family: var(--font-family-code);
+  font-size: 12px;
+}
+
+.analytics-card h3 {
+  margin: 10px 0 10px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.analytics-card p {
+  margin: 0 0 16px;
+  color: var(--mute);
+  font-size: 15px;
+}
+
+.analytics-card a {
+  margin-top: auto;
+  color: var(--ink);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.analytics-card a:hover {
+  color: #01e870;
+}
+
+.neo4j-strip {
+  display: grid;
+  gap: 10px;
+}
+
+.neo4j-question {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 500;
+}
+
+.neo4j-strip a {
+  color: #01e870;
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .passb-feed.is-idle {
+    display: none;
+  }
+
+  .hero h1 {
+    max-width: none;
+  }
+}
